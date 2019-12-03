@@ -12,12 +12,12 @@ public class UEB2 {
 
 	}
 
-	public Url getUrl(String s) {
-		return null;
+	public Url getUrl(String url) {
+		return new UrlFactory().getWebUrl(url);
 	}
 
 	public Request getRequest(InputStream inputStream) {
-		return null;
+		return new RequestFactory().getWebRequest(inputStream);
 	}
 
 	public Response getResponse() {

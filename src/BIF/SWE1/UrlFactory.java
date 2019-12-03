@@ -7,20 +7,29 @@ import java.util.Map;
 
 public class UrlFactory {
 
+    private String path;
+    private String filename;
+    private String extension;
+
     public Url getWebUrl(String url) {
 
         if(url == null) {
             return new WebUrl();
         }
 
-        return new WebUrl(url, parsePath(url), parseFilename(url), parseExtension(url), parseParameters(url));
+        return new WebUrl(url, parsePath(url), parseFilename(url), parseExtension(url), parseParameters(url), parseFragment(url), parseSegments());
     }
 
     private String parsePath(String url) {
+        String path;
 
         if(url == null) return "";
 
-        return url.substring(0, url.lastIndexOf('/'));
+        path = url.substring(0, url.lastIndexOf("/"));
+
+        this.path = path;
+
+        return path;
         /*
         example: "https://moodle.technikum-wien.at/course/view.php?id=10177"
         returns  "/moodle.technikum-wien.at/course/"
@@ -29,22 +38,37 @@ public class UrlFactory {
 
     private String parseFilename(String url) {
 
+        String filename;
+
         if(url == null) return "";
 
-        return url.substring(url.lastIndexOf('/'), url.indexOf('.'));
+        filename = url.substring(url.lastIndexOf('/'), url.indexOf('.'));
+        this.filename = filename;
+
+        return filename;
     }
 
     private String parseExtension(String url) {
 
+        String extension;
+
         if(url == null) return "";
 
-        return "." + url.split("\\.")[1].split("\\?")[0];
+        extension = "." + url.split("\\.")[1].split("\\?")[0];
+        // remove fragment if it exists
+        if(extension.contains("#")) {
+            extension = extension.substring(0, extension.indexOf("#"));
+        }
+
+        this.extension = extension;
+
+        return extension;
         /*
-        example string:                 "/test.jpg?x=y"
-        1st split:                      "/test" + "jpg?x=y"
+        example string:                 "/test.jpg#foo?x=y"
+        1st split:                      "/test" + "jpg#foo?x=y"
         2nd split with
-        result[1] of 1st split:         "jpg" + "x=y"
-        return result[0] of 2nd split:  "jpg"
+        result[1] of 1st split:         "jpg#foo" + "x=y"
+        return result[0] of 2nd split WITHOUT #foo:  "jpg"
          */
     }
 
@@ -67,6 +91,24 @@ public class UrlFactory {
         }
 
         return parameters;
+    }
+
+    private String parseFragment(String url) {
+        String fragment = url.substring(url.indexOf("#") + 1);
+
+        return fragment;
+    }
+
+    private String[] parseSegments() {
+        String[] segments;
+        // concat to full path
+        String fullPath = this.path + this.filename + this.extension;
+        // remove first / to avoid split problems
+        fullPath = fullPath.substring(1);
+        // split into array
+        segments = fullPath.split("/");
+
+        return segments;
     }
 
 }
