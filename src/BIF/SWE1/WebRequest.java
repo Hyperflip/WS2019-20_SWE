@@ -4,51 +4,51 @@ import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Url;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 public class WebRequest implements Request {
 
-    String url;
-    String method;
-    String host;
-    String[][] header;
-    String body;
+    private boolean valid;
+    private String method;
+    private Url url;
+    private String httpVersion;
+    private Map<String, String> headers = new HashMap<>();
+    private int headerCount;
 
-    WebRequest() {
-        this("", "", "", null, "");
-    }
 
-    WebRequest(String url, String method, String host, String[][] header, String body) {
-        this.url = url;
+    WebRequest(boolean valid, String method, Url url, String httpVersion, Map<String, String> headers, int headerCount) {
+        this.valid = valid;
         this.method = method;
-        this.host = host;
-        this.header = header;
-        this.body = body;
+        this.url = url;
+        this.httpVersion = httpVersion;
+        this.headers = headers;
+        this.headerCount = headerCount;
     }
 
     @Override
     public boolean isValid() {
-        return false;
+        return this.valid;
     }
 
     @Override
     public String getMethod() {
-        return null;
+        return this.method;
     }
 
     @Override
     public Url getUrl() {
-        return null;
+        return this.url;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return null;
+        return this.headers;
     }
 
     @Override
     public int getHeaderCount() {
-        return 0;
+        return this.headerCount;
     }
 
     @Override

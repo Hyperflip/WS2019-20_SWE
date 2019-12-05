@@ -19,7 +19,7 @@ public class WebUrl implements Url {
         this("", "", "", "", new HashMap<>(), "", new String[0]);
     }
 
-    public WebUrl(String rawUrl, String filename, String path, String extension, Map<String, String> parameters, String fragment, String[] segments) {
+    public WebUrl(String rawUrl, String path, String filename, String extension, Map<String, String> parameters, String fragment, String[] segments) {
         this.rawUrl = rawUrl;
         this.filename = filename;
         this.path = path;
@@ -36,6 +36,7 @@ public class WebUrl implements Url {
 
     @Override
     public String getPath() {
+        System.out.println("path: " + path + "\nfilename: " + filename + "\nextension: " + extension);
         return path + filename + extension;
     }
 

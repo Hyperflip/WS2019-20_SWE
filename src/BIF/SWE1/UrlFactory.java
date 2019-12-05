@@ -13,7 +13,7 @@ public class UrlFactory {
 
     public Url getWebUrl(String url) {
 
-        if(url == null) {
+        if(url == null || url.isEmpty()) {
             return new WebUrl();
         }
 
@@ -27,8 +27,12 @@ public class UrlFactory {
 
         path = url.substring(0, url.lastIndexOf("/"));
 
-        this.path = path;
+        // remove fragment if it exists
+        if(path.contains("#")) {
+            path = path.substring(0, path.indexOf("#"));
+        }
 
+        this.path = path;
         return path;
         /*
         example: "https://moodle.technikum-wien.at/course/view.php?id=10177"
@@ -39,29 +43,55 @@ public class UrlFactory {
     private String parseFilename(String url) {
 
         String filename;
+        String[] splitResult;
 
         if(url == null) return "";
 
-        filename = url.substring(url.lastIndexOf('/'), url.indexOf('.'));
-        this.filename = filename;
+        /*
+        example url's
+        .../text.html?a=1#foo
+        .../text.html#foo
+        .../text.html
+        /
+        */
 
+        filename = url.substring(url.lastIndexOf('/'));
+        if((splitResult = filename.split(".")).length != 0) {
+            filename = splitResult[0];
+        }
+        else {
+            filename = filename;
+        }
+
+        // remove fragment if it exists
+        if(filename.contains("#")) {
+            filename = filename.substring(0, filename.indexOf("#"));
+        }
+
+        this.filename = filename;
         return filename;
     }
 
     private String parseExtension(String url) {
 
         String extension;
+        String[] firstSplitResult;
 
-        if(url == null) return "";
+        if(url == null) extension = "";
 
-        extension = "." + url.split("\\.")[1].split("\\?")[0];
+        if((firstSplitResult = filename.split(".")).length != 0) {
+            extension = firstSplitResult[1].split("\\?")[0];
+        }
+        else {
+            extension = "";
+        }
+
         // remove fragment if it exists
         if(extension.contains("#")) {
             extension = extension.substring(0, extension.indexOf("#"));
         }
 
         this.extension = extension;
-
         return extension;
         /*
         example string:                 "/test.jpg#foo?x=y"
