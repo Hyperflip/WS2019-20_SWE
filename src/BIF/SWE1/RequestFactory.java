@@ -34,6 +34,14 @@ public class RequestFactory {
 
         boolean valid = validate();
 
+        System.out.println("Method: " + this.method + "\nUrl: " + this.url.getRawUrl()
+        + "\nVersion: " + this.httpVersion + "\nHeaders: ");
+        for(String header : this.headers.values()) {
+            System.out.println(header);
+        }
+        System.out.println("header count: " + this.headerCount);
+
+
         return new WebRequest(valid, this.method, this.url, this.httpVersion, this.headers, this.headerCount);
     }
 
