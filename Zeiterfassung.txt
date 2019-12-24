@@ -1,0 +1,14 @@
+Wer			Wann			Was					Wie lange (h)		Anmerkung
+		
+Philipp Andert		21.09.2019		Implementierung der Unit Tests		1:00
+
+Philipp Andert		28.10.2019		Implementierung der Url in
+						WebUrl, parsing mittels
+						UrlFactory				1:30
+
+Philipp Andert		30.11.2019		Fertigstellen von UE1			0:20
+
+Philipp Andert		03.12.2019		Implementierung der WebUrl Klasse	1:00
+						und RequestFactory
+
+Philipp Andert		05.12.2019		Fortschritt Parsen der Request		2:00
