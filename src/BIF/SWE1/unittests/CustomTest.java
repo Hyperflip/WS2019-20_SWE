@@ -1,7 +1,6 @@
 package BIF.SWE1.unittests;
 
 import BIF.SWE1.CustomUE;
-import BIF.SWE1.UrlFactory;
 import BIF.SWE1.interfaces.Url;
 import org.junit.*;
 
@@ -35,7 +34,7 @@ public class CustomTest extends AbstractTestFixture<CustomUE> {
 
 	// UrlType.ONLY_PATH
 	@Test
-	public void url_should_parse_correctly_one() throws Exception {
+	public void url_should_parse_only_path() throws Exception {
 		Url obj = createInstance().getUrl("/test/folder/image.jpg");
 		assertNotNull("Custom.GetUrl returned null", obj);
 
@@ -44,7 +43,7 @@ public class CustomTest extends AbstractTestFixture<CustomUE> {
 
 	// UrlType.NO_QUERY
 	@Test
-	public void url_should_parse_correctly_two() throws Exception {
+	public void url_should_parse_no_query() throws Exception {
 		Url obj = createInstance().getUrl("/test/folder/image.jpg#foo");
 		assertNotNull("Custom.GetUrl returned null", obj);
 
@@ -54,16 +53,32 @@ public class CustomTest extends AbstractTestFixture<CustomUE> {
 
 	// UrlType.NO_FRAGMENT
 	@Test
-	public void url_should_parse_correctly_three() throws Exception {
+	public void url_should_parse_no_fragment() throws Exception {
 		Url obj = createInstance().getUrl("/test/folder/image.jpg?x=1&y=2");
 		assertNotNull("Custom.GetUrl returned null", obj);
 
 		assertEquals("/test/folder/image.jpg", obj.getPath());
 
 		assertNotNull(obj.getParameter().get("x"));
+		assertNotNull(obj.getParameter().get("y"));
 		assertEquals("1", obj.getParameter().get("x"));
+		assertEquals("2", obj.getParameter().get("y"));
 	}
 
-	// TODO: test for UrlType.FULL_URL
+	// UrlType.FULL_URL
+	@Test
+	public void url_should_parse_full_url() throws Exception {
+		Url obj = createInstance().getUrl("/test/folder/image.jpg?x=1&y=2#foo");
+		assertNotNull("Custom.GetUrl returned null", obj);
+
+		assertEquals("/test/folder/image.jpg", obj.getPath());
+
+		assertEquals("foo", obj.getFragment());
+
+		assertNotNull(obj.getParameter().get("x"));
+		assertNotNull(obj.getParameter().get("y"));
+		assertEquals("1", obj.getParameter().get("x"));
+		assertEquals("2", obj.getParameter().get("y"));
+	}
 
 }

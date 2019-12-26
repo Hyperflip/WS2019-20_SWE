@@ -52,7 +52,7 @@ public class WebUrl implements Url {
 
     @Override
     public String getPath() {
-        return path + filename + extension;
+        return path;
     }
 
     @Override

@@ -6,91 +6,107 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-
-/**
-* class which parses InputStream request information and
-* constructs and then returns a WebRequest object
-*/
+import java.util.*;
 
 public class RequestFactory {
 
-    private String method = "";
-    private Url url = new UrlFactory().getWebUrl("");
-    private String httpVersion = "";
+    private List<String> validMethods = Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE");
+
+    // BufferedReader from request InputStream
+    private BufferedReader reader;
+    // list of request lines
+    private List<String> lines = new ArrayList<String>();
+    // parsed information from first line
+    private String method;
+    private Url url;
+    private String version;
+    // check validity after parsing first line + validating method
+    private boolean valid;
+    // parsing the header lines
+    private int headerCount;
     private Map<String, String> headers = new HashMap<>();
-    private int headerCount = 0;
-    /** getUserAgent() redundant here as it's stored in the Map
-    rest to be implemented ... */
+    private String userAgent;
+
 
     public WebRequest getWebRequest(InputStream is) {
 
+        // create BufferedReader from InputStream
+        this.getBufferedReader(is);
+
+        // parse and store all lines of the request
         try {
-            parseRequestStream(is);
+            this.parseRequestLines(this.reader);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        boolean valid = validate();
+        // parse first line and check validity of method
+        if((this.valid = this.parseFirstLine())) this.valid = validateMethod();
 
-        System.out.println("Method: " + this.method + "\nUrl: " + this.url.getRawUrl()
-        + "\nVersion: " + this.httpVersion + "\nHeaders: ");
-        for(String header : this.headers.values()) {
-            System.out.println(header);
+        // if invalid, return here without headers, etc.
+        if(!this.valid) {
+            return new WebRequest(false, this.method, this.url, this.version);
         }
-        System.out.println("header count: " + this.headerCount);
 
+        // parse headers and store User-Agent in separate variable
+        this.parseHeaders();
 
-        return new WebRequest(valid, this.method, this.url, this.httpVersion, this.headers, this.headerCount);
+        return new WebRequest(this.valid, this.method, this.url, this.version, this.headers, this.headerCount, this.userAgent);
     }
 
-    private void parseRequestStream(InputStream is) throws IOException {
-        // Creating an InputStreamReader object from InputStream
+    private void getBufferedReader(InputStream is) {
         InputStreamReader isReader = new InputStreamReader(is);
-        // Creating a BufferedReader object from InputStreamReader
-        BufferedReader reader = new BufferedReader(isReader);
+        this.reader = new BufferedReader(isReader);
+    }
 
-        // read request line and pass to parser
-        String requestLine = reader.readLine();
+    private void parseRequestLines(BufferedReader reader) throws IOException {
+        String line;
 
-        if(requestLine.trim().isEmpty()) {
-            throw new IOException("Request is empty");
-        }
-
-        parseRequestLine(requestLine);
-
-        // read each header string and pass to parser
-        String headerStr;
-        while((headerStr = reader.readLine()) != null) {
-            if(headerStr.trim().isEmpty()) break;
-            parseHeaders(headerStr);
+        System.out.println("PARSING request lines");
+        for(int i = 0; (line = reader.readLine()) != null; i++) {
+            this.lines.add(line);
+            System.out.println(i + ": " + line);
         }
     }
 
-    private void parseRequestLine(String line) throws IOException {
-        String[] contents = line.split(" ");
+    private boolean parseFirstLine() {
+        String[] content = this.lines.get(0).split(" ");
+        if(content.length != 3) return false;
 
-        if(contents.length != 3) {
-            throw new IOException("Request is invalid (RequestLine incomplete)");
-        }
+        String urlString;
+        if((urlString = content[1]).isEmpty()) return false;
 
-        String urlString = contents[1];
-        this.method = contents[0];
+        if((this.method = content[0]).isEmpty()) return false;
+        if((this.version = content[2]).isEmpty()) return false;
+
         this.url = new UrlFactory().getWebUrl(urlString);
-        this.httpVersion = contents[2];
+
+        System.out.println("PARSING first line");
+        System.out.println("method: " + this.method);
+        System.out.println("url: " + this.url.getRawUrl());
+        System.out.println("version: " + this.version);
+
+        return true;
     }
 
-    private void parseHeaders(String str) {
-        String key = str.substring(0, str.indexOf(":"));
-        String value = str.substring(str.indexOf(":") + 2);
-
-        this.headers.put(key, value);
-        this.headerCount++;
+    private boolean validateMethod() {
+        return this.validMethods.contains(this.method.toUpperCase());
     }
 
-    private boolean validate() {
-        // TODO: validate HTTP request
-        return false;
+    private void parseHeaders() {
+        System.out.println("PARSING headers");
+
+        String line, key, value;
+        for(int i = 1; !(line = this.lines.get(i).trim()).isEmpty(); i++) {
+            this.headerCount++;
+
+            key = line.substring(0, line.indexOf(":"));
+            value = line.substring(line.indexOf(":") + 2);
+
+            if(key.equals("User-Agent")) this.userAgent = value;
+
+            this.headers.put(key, value);
+            System.out.println(i + ": key = " + key + ", value = " + value);
+        }
     }
 }

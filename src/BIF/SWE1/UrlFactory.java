@@ -3,142 +3,177 @@ package BIF.SWE1;
 import BIF.SWE1.interfaces.Url;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class UrlFactory {
 
+    enum UrlType {
+        ONLY_PATH,
+        NO_QUERY,
+        NO_FRAGMENT,
+        FULL_URL
+    }
+
+    // results of split at "#"
+    private String url_without_fragment;
+    private String fragment;
+    // results of split at "?"
+    private String path_full;
+    private String query;
+    // results of parsing full_path
     private String path;
     private String filename;
     private String extension;
+    private String file;
+    // results of parsing segments
+    private String[] segments;
+    // result of parsing parameters
+    private HashMap<String, String> parameters;
 
-    public Url getWebUrl(String url) {
+    public Url getWebUrl(String url_raw) {
 
-        if(url == null || url.isEmpty()) {
+        if(url_raw == null || url_raw.isEmpty()) {
             return new WebUrl();
         }
 
-        return new WebUrl(url, parsePath(url), parseFilename(url), parseExtension(url), parseParameters(url), parseFragment(url), parseSegments());
-    }
+        // print raw url
+        System.out.println("PARSING URL " + url_raw);
+        // detect type of URL
+        UrlType type = this.detectUrlType(url_raw);
+        System.out.print("Url is of type ");
+        switch(type) {
+            case ONLY_PATH:
+                System.out.print(UrlType.ONLY_PATH + "\n");
 
-    private String parsePath(String url) {
-        String path;
+                this.path_full = url_raw;
+                this.parseFullPath(this.path_full);
+                this.parseSegments();
 
-        if(url == null) return "";
+                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, new HashMap<String, String>(), "", this.segments);
 
-        path = url.substring(0, url.lastIndexOf("/"));
+            case NO_QUERY:
+                System.out.print(UrlType.NO_QUERY + "\n");
 
-        // remove fragment if it exists
-        if(path.contains("#")) {
-            path = path.substring(0, path.indexOf("#"));
+                this.splitAtFragmentDelimiter(url_raw);
+                this.path_full = this.url_without_fragment;
+                this.parseFullPath(this.path_full);
+                this.parseSegments();
+
+                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, new HashMap<String, String>(), this.fragment, this.segments);
+
+            case NO_FRAGMENT:
+                System.out.print(UrlType.NO_FRAGMENT + "\n");
+
+                this.splitAtQueryDelimiter(url_raw);
+                this.parseFullPath(this.path_full);
+                this.parseSegments();
+                this.parseParameters(this.query);
+
+                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, this.parameters, "", this.segments);
+
+            case FULL_URL:
+                System.out.print(UrlType.FULL_URL + "\n");
+
+                this.splitAtFragmentDelimiter(url_raw);
+                this.splitAtQueryDelimiter(this.url_without_fragment);
+                this.parseFullPath(this.path_full);
+                this.parseSegments();
+                this.parseParameters(this.query);
+
+                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, this.parameters, this.fragment, this.segments);
+
+            default:
+                System.out.println("Error detecting URL type");
+                break;
         }
 
-        this.path = path;
-        return path;
-        /*
-        example: "https://moodle.technikum-wien.at/course/view.php?id=10177"
-        returns  "/moodle.technikum-wien.at/course/"
-         */
+        return new WebUrl();
     }
 
-    private String parseFilename(String url) {
+    /**
+     * important:
+     * first split at fragment delimiter, THEN at query delimiter
+     * e.g:
+     * /path/file.jpg?x=1&y=2#foo
+     * first split
+     * /path/file.jpg AND x=1&y=2#foo
+     * second split
+     * /path/file.jpg AND x=1&y=2 AND foo
+     */
 
-        String filename;
+    // detect the type of URL, so the parsing can be done correctly
+    private UrlType detectUrlType(String url) {
+        if(!url.contains("?") && !url.contains("#")) {
+            return UrlType.ONLY_PATH;
+        }
+        else if(!url.contains("?")) {
+            return UrlType.NO_QUERY;
+        }
+        else if(!url.contains("#")) {
+            return UrlType.NO_FRAGMENT;
+        }
+        else return UrlType.FULL_URL;
+    }
+
+    private void splitAtFragmentDelimiter(String url) {
+        String[] result = url.split("#");
+        this.url_without_fragment = result[0];
+        this.fragment = result[1];
+
+        System.out.println("without fragment: " + this.url_without_fragment);
+        System.out.println("fragment: " + this.fragment);
+    }
+
+    private void splitAtQueryDelimiter(String url) {
+        String[] result = url.split("\\?");
+        this.path_full = result[0];
+        this.query = result[1];
+
+        System.out.println("full path: " + this.path_full);
+        System.out.println("query: " + this.query);
+    }
+
+    private void parseFullPath(String path_only) {
+        this.path = path_only.substring(0, path_only.lastIndexOf("/"));
+
+        String substrResult;
         String[] splitResult;
 
-        if(url == null) return "";
-
-        /*
-        example url's
-        .../text.html?a=1#foo
-        .../text.html#foo
-        .../text.html
-        /
-        */
-
-        filename = url.substring(url.lastIndexOf('/'));
-        if((splitResult = filename.split(".")).length != 0) {
-            filename = splitResult[0];
-        }
-        else {
-            filename = filename;
+        this.file = substrResult = path_only.substring(path_only.lastIndexOf("/") + 1);
+        splitResult = substrResult.split("\\.");
+        this.filename = splitResult[0];
+        if(splitResult.length > 1) {
+            this.extension = splitResult[1];
         }
 
-        // remove fragment if it exists
-        if(filename.contains("#")) {
-            filename = filename.substring(0, filename.indexOf("#"));
-        }
-
-        this.filename = filename;
-        return filename;
+        System.out.println("path: " + this.path);
+        System.out.println("file: " + this.file);
+        System.out.println("filename: " + this.filename);
+        System.out.println("extension: " + this.extension);
     }
 
-    private String parseExtension(String url) {
+    private void parseSegments() {
+        this.segments = this.path_full.substring(1).split("/");
 
-        String extension;
-        String[] firstSplitResult;
-
-        if(url == null) extension = "";
-
-        if((firstSplitResult = filename.split(".")).length != 0) {
-            extension = firstSplitResult[1].split("\\?")[0];
+        System.out.println("segments:");
+        for(String segment : this.segments) {
+            System.out.println(segment);
         }
-        else {
-            extension = "";
-        }
-
-        // remove fragment if it exists
-        if(extension.contains("#")) {
-            extension = extension.substring(0, extension.indexOf("#"));
-        }
-
-        this.extension = extension;
-        return extension;
-        /*
-        example string:                 "/test.jpg#foo?x=y"
-        1st split:                      "/test" + "jpg#foo?x=y"
-        2nd split with
-        result[1] of 1st split:         "jpg#foo" + "x=y"
-        return result[0] of 2nd split WITHOUT #foo:  "jpg"
-         */
     }
 
-    private Map<String, String> parseParameters(String url) {
-
+    private void parseParameters(String query) {
         HashMap<String, String> parameters = new HashMap<>();
+        String[] result;
 
-        if(!url.contains("?")) return parameters;
+        for(String param : query.split("&")) {
+            result = param.split("=");
+            String key = result[0];
+            String value = result[1];
+            parameters.put(key, value);
 
-        // get part of url containing parameter strings
-        String subUrl = url.substring(url.lastIndexOf('?') + 1);
-
-        /* for each parameter string that can be split off, do ...
-        (if there is only 1 parameter, hence no "&" delimiting multiple
-        parameter strings, do it once with the only parameter string ...) */
-        for(String param : subUrl.split("&")) {
-            /* split the param string at "=" and put key-value pair
-            (at pos [0] and [1] of the split result) into the Map */
-            parameters.put(param.split("=")[0], param.split("=")[1]);
+            System.out.println("key: " + key + ", value: " + value);
         }
 
-        return parameters;
-    }
-
-    private String parseFragment(String url) {
-        String fragment = url.substring(url.indexOf("#") + 1);
-
-        return fragment;
-    }
-
-    private String[] parseSegments() {
-        String[] segments;
-        // concat to full path
-        String fullPath = this.path + this.filename + this.extension;
-        // remove first / to avoid split problems
-        fullPath = fullPath.substring(1);
-        // split into array
-        segments = fullPath.split("/");
-
-        return segments;
+        this.parameters = parameters;
     }
 
 }

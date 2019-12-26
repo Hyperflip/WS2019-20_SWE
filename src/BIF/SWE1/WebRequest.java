@@ -12,18 +12,29 @@ public class WebRequest implements Request {
     private boolean valid;
     private String method;
     private Url url;
-    private String httpVersion;
-    private Map<String, String> headers = new HashMap<>();
+    private String version;
     private int headerCount;
+    private Map<String, String> headers = new HashMap<>();
+    private String userAgent;
 
+    // TODO: adjust constructor parameters once RequestFactory is finished
 
-    WebRequest(boolean valid, String method, Url url, String httpVersion, Map<String, String> headers, int headerCount) {
+    // on invalid request, no header information is passed
+    WebRequest(boolean valid, String method, Url url, String version) {
         this.valid = valid;
         this.method = method;
         this.url = url;
-        this.httpVersion = httpVersion;
-        this.headers = headers;
+        this.version = version;
+    }
+
+    WebRequest(boolean valid, String method, Url url, String version, Map<String, String> headers, int headerCount, String userAgent) {
+        this.valid = valid;
+        this.method = method;
+        this.url = url;
+        this.version = version;
         this.headerCount = headerCount;
+        this.headers = headers;
+        this.userAgent = userAgent;
     }
 
     @Override
