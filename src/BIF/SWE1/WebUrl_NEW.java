@@ -5,7 +5,7 @@ import BIF.SWE1.interfaces.Url;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WebUrl implements Url {
+public class WebUrl_NEW implements Url {
 
     private String rawUrl;
     private String filename;
@@ -15,11 +15,11 @@ public class WebUrl implements Url {
     private String fragment;
     private String[] segments;
 
-    public WebUrl() {
+    public WebUrl_NEW() {
         this("", "", "", "", new HashMap<>(), "", new String[0]);
     }
 
-    public WebUrl(String rawUrl, String path, String filename, String extension, Map<String, String> parameters, String fragment, String[] segments) {
+    public WebUrl_NEW(String rawUrl, String path, String filename, String extension, Map<String, String> parameters, String fragment, String[] segments) {
         this.rawUrl = rawUrl;
         this.filename = filename;
         this.path = path;
@@ -52,7 +52,7 @@ public class WebUrl implements Url {
 
     @Override
     public String getPath() {
-        return path + filename + extension;
+        return path;
     }
 
     @Override

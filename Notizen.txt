@@ -1,0 +1,21 @@
+sample URL 1:
+
+/test/folder/image.jpg?x=1&y=2#foo
+
+splitting at #:
+
+save "/test/folder/image.jpg?x=1&y=2" in wihtout_fragment, save "foo" in fragment
+
+splitting at ?:
+
+save "/test/folder/image.jpg" in full_path, save "x=1&=2" in raw_parameters
+
+
+
+types of URLs:
+
+"/test/folder/image.jpg" -> no fragment + query
+
+"test/folder/image.jpg#foo" -> no query
+
+"test/folder/image.jpg?x=1&y=2#foo" -> with both  
