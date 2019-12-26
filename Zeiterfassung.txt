@@ -14,3 +14,6 @@ Philipp Andert		03.12.2019		Implementierung der WebUrl Klasse	1:00
 Philipp Andert		05.12.2019		Fortschritt Parsen der Request		2:00
 
 Philipp Andert		26.12.2019		Anpassung URL parsing			1:40
+
+Philipp Andert		27.12.2019		Fortschritt Parsen der Request		3:00
+						nur noch Response related stuff
