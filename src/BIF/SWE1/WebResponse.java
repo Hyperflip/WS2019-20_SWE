@@ -9,8 +9,6 @@ import java.util.Map;
 
 public class WebResponse implements Response {
 
-    private int statusCode;
-
     private static Map<Integer, String> validStatusCodes;
     static {
         validStatusCodes = new HashMap<>();
@@ -19,14 +17,18 @@ public class WebResponse implements Response {
         validStatusCodes.put(500, "Internal Server Error");
     }
 
+    private int statusCode;
+    private Map<String, String> headers;
+
     WebResponse() {
         System.out.println("constructing WebResponse...");
         this.statusCode = -1;
+        this.headers = new HashMap<>();
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return null;
+        return this.headers;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class WebResponse implements Response {
 
     @Override
     public void addHeader(String header, String value) {
-
+        this.headers.put(header, value);
     }
 
     @Override
