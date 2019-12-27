@@ -17,7 +17,7 @@ public class UEB3 {
 	}
 
 	public Response getResponse() {
-		return null;
+		return new WebResponse();
 	}
 
 	public Plugin getTestPlugin() {

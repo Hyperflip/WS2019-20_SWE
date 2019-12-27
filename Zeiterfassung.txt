@@ -20,3 +20,5 @@ Philipp Andert		27.12.2019		Fortschritt Parsen der Request		3:00
 
 Philipp Andert		27.12.2019		Vervollständigung UE2 			1:10
 						(Responses) + Anfang UE3 (Requests)
+
+Philipp Andert		27.12.2019		Fortschritt UE3, writing Response	1:45

@@ -2,8 +2,7 @@ package BIF.SWE1;
 
 import BIF.SWE1.interfaces.Response;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,13 +16,96 @@ public class WebResponse implements Response {
         validStatusCodes.put(500, "Internal Server Error");
     }
 
+    private String version;
     private int statusCode;
     private Map<String, String> headers;
+    private String contentType;
+    private String serverHeader;
+    private String content;
+    private int contentLength;
 
     WebResponse() {
         System.out.println("constructing WebResponse...");
+
+        this.version = "HTTP/1.1";
         this.statusCode = -1;
         this.headers = new HashMap<>();
+        this.serverHeader = "BIF-SWE1-Server";
+        this.content = null;
+    }
+
+    private void setContentLength() throws UnsupportedEncodingException {
+        this.contentLength = this.content.getBytes("UTF-8").length;
+    }
+
+    private ByteArrayOutputStream constructResponseStream() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        System.out.println("constructing HTTP response...");
+
+        // writing a valid HTTP response
+        int i;
+
+        // first line
+
+        // write HTTP version
+        for(i = 0; i < this.version.length(); i++) {
+            out.write(this.version.charAt(i));
+        }
+        // write space
+        out.write(' ');
+        // write status code
+        String status = String.valueOf(this.statusCode);
+        for(i = 0; i < status.length(); i++) {
+            out.write(status.charAt(i));
+        }
+        // write space
+        out.write(' ');
+        // write status text
+        String statusText = validStatusCodes.get(this.statusCode);
+        for(i = 0; i < statusText.length(); i++) {
+            out.write(statusText.charAt(i));
+        }
+        // write newline
+        out.write('\n');
+
+        // write server header
+        // key
+        String keyHead = "Server: ";
+        for(i = 0; i < keyHead.length(); i++) {
+            out.write(keyHead.charAt(i));
+        }
+        // value
+        for(i = 0; i < this.serverHeader.length(); i++) {
+            out.write(this.serverHeader.charAt(i));
+        }
+        // write newline
+        out.write('\n');
+
+        // write header lines
+        for(Map.Entry<String, String> key : this.headers.entrySet()) {
+            String keyStr = key.getKey();
+            String valueStr = key.getValue();
+
+            // write key
+            for(i = 0; i < keyStr.length(); i++) {
+                out.write(keyStr.charAt(i));
+            }
+            // write ": "
+            out.write(':');
+            out.write(' ');
+            // write value
+            for(i = 0; i < valueStr.length(); i++) {
+                out.write(valueStr.charAt(i));
+            }
+            // write newline
+            out.write('\n');
+        }
+
+        // TODO: writing the rest :^)
+
+
+        return out;
     }
 
     @Override
@@ -33,17 +115,19 @@ public class WebResponse implements Response {
 
     @Override
     public int getContentLength() {
-        return 0;
+        if(this.content == null) return 0;
+
+        return this.contentLength;
     }
 
     @Override
     public String getContentType() {
-        return null;
+        return this.contentType;
     }
 
     @Override
     public void setContentType(String contentType) {
-
+        this.contentType = contentType;
     }
 
     @Override
@@ -78,17 +162,23 @@ public class WebResponse implements Response {
 
     @Override
     public String getServerHeader() {
-        return null;
+        return this.serverHeader;
     }
 
     @Override
     public void setServerHeader(String server) {
-
+        this.serverHeader = server;
     }
 
     @Override
     public void setContent(String content) {
+        this.content = content;
 
+        try {
+            this.setContentLength();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -104,5 +194,16 @@ public class WebResponse implements Response {
     @Override
     public void send(OutputStream network) {
 
+        ByteArrayOutputStream out = this.constructResponseStream();
+
+        String outStr = out.toString();
+        System.out.println(outStr);
+
+        byte[] arr = out.toByteArray();
+        try {
+            network.write(arr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
