@@ -17,3 +17,5 @@ Philipp Andert		26.12.2019		Anpassung URL parsing			1:40
 
 Philipp Andert		27.12.2019		Fortschritt Parsen der Request		3:00
 						nur noch Response related stuff
+
+Philipp Andert		27.12.2019		Fortschritt UE2 (Responses)		0:45

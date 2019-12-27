@@ -21,6 +21,6 @@ public class UEB2 {
 	}
 
 	public Response getResponse() {
-		return null;
+		return new ResponseFactory().getWebResponse();
 	}
 }
