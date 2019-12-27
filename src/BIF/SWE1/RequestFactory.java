@@ -105,7 +105,7 @@ public class RequestFactory {
 
             if(key.equals("User-Agent")) this.userAgent = value;
 
-            this.headers.put(key, value);
+            this.headers.put(key.toLowerCase(), value);
             System.out.println(i + ": key = " + key + ", value = " + value);
         }
     }

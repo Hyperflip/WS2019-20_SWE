@@ -64,7 +64,7 @@ public class WebRequest implements Request {
 
     @Override
     public String getUserAgent() {
-        return null;
+        return this.userAgent;
     }
 
     @Override

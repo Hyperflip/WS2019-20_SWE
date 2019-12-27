@@ -13,7 +13,7 @@ public class UEB3 {
 	}
 
 	public Request getRequest(InputStream inputStream) {
-		return null;
+		return new RequestFactory().getWebRequest(inputStream);
 	}
 
 	public Response getResponse() {
