@@ -22,3 +22,5 @@ Philipp Andert		27.12.2019		Vervollständigung UE2 			1:10
 						(Responses) + Anfang UE3 (Requests)
 
 Philipp Andert		27.12.2019		Fortschritt UE3, writing Response	1:45
+
+Philipp Andert		28.12.2019		Date header in response			1:00
