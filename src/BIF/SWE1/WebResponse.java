@@ -3,8 +3,11 @@ package BIF.SWE1;
 import BIF.SWE1.interfaces.Response;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class WebResponse implements Response {
 
@@ -38,36 +41,58 @@ public class WebResponse implements Response {
         this.contentLength = this.content.getBytes("UTF-8").length;
     }
 
+    private void writeVersionToStream(ByteArrayOutputStream out) {
+        // check validity
+        if(!this.version.startsWith("HTTP/1.")) throw new IllegalArgumentException("invalid HTTP version");
+        // write version
+        for(int i = 0; i < this.version.length(); i++) {
+            out.write(this.version.charAt(i));
+        }
+        // write space
+        out.write(' ');
+    }
+
+    private void writeStatusCodeToStream(ByteArrayOutputStream out) {
+        // get status code
+        int code = this.getStatusCode();
+        // get code and text as string
+        String codeStr = String.valueOf(code);
+        String statusText = String.valueOf(validStatusCodes.get(code));
+
+        for(int i = 0; i < codeStr.length(); i++) {
+            out.write(codeStr.charAt(i));
+        }
+        // write space
+        out.write(' ');
+        // write status text
+        for(int i = 0; i < statusText.length(); i++) {
+            out.write(statusText.charAt(i));
+        }
+        // write newline
+        out.write('\n');
+    }
+
+    private void writeDateHeaderToStream(ByteArrayOutputStream out) {
+        ZonedDateTime nowGMT = ZonedDateTime.now(ZoneId.of("Europe/London"));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.GERMANY);
+        String dateStr = "Date: " + dtf.format(nowGMT);
+
+        for(int i = 0; i < dateStr.length(); i++) {
+            out.write(dateStr.charAt(i));
+        }
+        out.write('\n');
+    }
+
     private ByteArrayOutputStream constructResponseStream() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         System.out.println("constructing HTTP response...");
 
-        // writing a valid HTTP response
         int i;
 
-        // first line
-
-        // write HTTP version
-        for(i = 0; i < this.version.length(); i++) {
-            out.write(this.version.charAt(i));
-        }
-        // write space
-        out.write(' ');
-        // write status code
-        String status = String.valueOf(this.statusCode);
-        for(i = 0; i < status.length(); i++) {
-            out.write(status.charAt(i));
-        }
-        // write space
-        out.write(' ');
-        // write status text
-        String statusText = validStatusCodes.get(this.statusCode);
-        for(i = 0; i < statusText.length(); i++) {
-            out.write(statusText.charAt(i));
-        }
-        // write newline
-        out.write('\n');
+        this.writeVersionToStream(out);
+        this.writeStatusCodeToStream(out);
+        this.writeDateHeaderToStream(out);
 
         // write server header
         // key
