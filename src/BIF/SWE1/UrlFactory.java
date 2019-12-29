@@ -48,7 +48,7 @@ public class UrlFactory {
                 this.parseFullPath(this.path_full);
                 this.parseSegments();
 
-                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, new HashMap<String, String>(), "", this.segments);
+                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, null, null, this.segments);
 
             case NO_QUERY:
                 System.out.print(UrlType.NO_QUERY + "\n");
@@ -58,7 +58,7 @@ public class UrlFactory {
                 this.parseFullPath(this.path_full);
                 this.parseSegments();
 
-                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, new HashMap<String, String>(), this.fragment, this.segments);
+                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, null, this.fragment, this.segments);
 
             case NO_FRAGMENT:
                 System.out.print(UrlType.NO_FRAGMENT + "\n");
@@ -68,7 +68,7 @@ public class UrlFactory {
                 this.parseSegments();
                 this.parseParameters(this.query);
 
-                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, this.parameters, "", this.segments);
+                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, this.parameters, null, this.segments);
 
             case FULL_URL:
                 System.out.print(UrlType.FULL_URL + "\n");

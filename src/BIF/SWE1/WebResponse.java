@@ -3,6 +3,7 @@ package BIF.SWE1;
 import BIF.SWE1.interfaces.Response;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -21,11 +22,13 @@ public class WebResponse implements Response {
 
     private String version;
     private int statusCode;
-    private Map<String, String> headers;
-    private String contentType;
+
     private String serverHeader;
-    private String content;
+    private Map<String, String> headers;
+
+    private String contentType;
     private int contentLength;
+    private String content;
 
     WebResponse() {
         System.out.println("constructing WebResponse...");
@@ -83,52 +86,63 @@ public class WebResponse implements Response {
         out.write('\n');
     }
 
-    private ByteArrayOutputStream constructResponseStream() {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        System.out.println("constructing HTTP response...");
-
-        int i;
-
-        this.writeVersionToStream(out);
-        this.writeStatusCodeToStream(out);
-        this.writeDateHeaderToStream(out);
-
+    private void writeServerHeaderToStream(ByteArrayOutputStream out) {
+        String header = "Server: " + this.serverHeader;
         // write server header
-        // key
-        String keyHead = "Server: ";
-        for(i = 0; i < keyHead.length(); i++) {
-            out.write(keyHead.charAt(i));
-        }
-        // value
-        for(i = 0; i < this.serverHeader.length(); i++) {
-            out.write(this.serverHeader.charAt(i));
+        for(int i = 0; i < header.length(); i++) {
+            out.write(header.charAt(i));
         }
         // write newline
         out.write('\n');
+    }
 
-        // write header lines
+    private void writeHeadersToStream(ByteArrayOutputStream out) {
         for(Map.Entry<String, String> key : this.headers.entrySet()) {
             String keyStr = key.getKey();
             String valueStr = key.getValue();
-
             // write key
-            for(i = 0; i < keyStr.length(); i++) {
+            for(int i = 0; i < keyStr.length(); i++) {
                 out.write(keyStr.charAt(i));
             }
             // write ": "
             out.write(':');
             out.write(' ');
             // write value
-            for(i = 0; i < valueStr.length(); i++) {
+            for(int i = 0; i < valueStr.length(); i++) {
                 out.write(valueStr.charAt(i));
             }
             // write newline
             out.write('\n');
         }
+    }
 
-        // TODO: writing the rest :^)
+    private void writeContentToStream(ByteArrayOutputStream out) {
+        byte[] utf8Str = this.content.getBytes(StandardCharsets.UTF_8);
+        // write content
+        for (byte b : utf8Str) {
+            out.write(b);
+        }
 
+    }
+
+    private ByteArrayOutputStream constructResponseStream() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        System.out.println("constructing HTTP response...\n");
+
+        this.writeVersionToStream(out);
+        this.writeStatusCodeToStream(out);
+        this.writeDateHeaderToStream(out);
+        this.writeServerHeaderToStream(out);
+        this.writeHeadersToStream(out);
+        out.write('\n');    // header end line
+
+        if(this.getContentType() != null && this.getContentLength() == 0) {
+            throw new IOException("No content, yet content type was set");
+        }
+        else if(this.getContentLength() > 0) {
+            this.writeContentToStream(out);
+        }
 
         return out;
     }
@@ -169,7 +183,6 @@ public class WebResponse implements Response {
             System.out.println("Not setting invalid status code");
             return;
         }
-
         System.out.println("Setting status code " + status);
         this.statusCode = status;
     }
@@ -218,12 +231,19 @@ public class WebResponse implements Response {
 
     @Override
     public void send(OutputStream network) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        ByteArrayOutputStream out = this.constructResponseStream();
+        try {
+            out = this.constructResponseStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        // print for debugging purposes
         String outStr = out.toString();
         System.out.println(outStr);
 
+        // write to OutputStream
         byte[] arr = out.toByteArray();
         try {
             network.write(arr);

@@ -31,37 +31,24 @@ public class WebUrl implements Url {
         //this.printGetters();
     }
 
-    private void printGetters() {
-        System.out.println(
-                "Url parsing:\n" +
-                "getRawUrl: " + this.getRawUrl() + "\n" + "getPath: " + this.getPath() + "\n"
-        );
-
-        for(Map.Entry<String, String> entry : this.getParameter().entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            System.out.println("key: " + key + "\n" + "value: " + value);
-        }
-    }
-
     @Override
     public String getRawUrl() {
-        return rawUrl;
+        return this.rawUrl;
     }
 
     @Override
     public String getPath() {
-        return path;
+        return this.path;
     }
 
     @Override
     public Map<String, String> getParameter() {
-        return parameters;
+        return this.parameters;
     }
 
     @Override
     public int getParameterCount() {
+        if(this.parameters == null) return 0;
         return parameters.size();
     }
 
@@ -74,18 +61,18 @@ public class WebUrl implements Url {
 
     @Override
     public String getFileName() {
-        return filename;
+        return this.filename;
     }
 
     @Override
     public String getExtension() {
-        return extension;
+        return this.extension;
     }
 
     // purpose unknown
     @Override
     public String getFragment() {
-        return fragment;
+        return this.fragment;
     }
 
 }
