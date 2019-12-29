@@ -77,7 +77,7 @@ public class WebResponse implements Response {
 
     private void writeDateHeaderToStream(ByteArrayOutputStream out) {
         ZonedDateTime nowGMT = ZonedDateTime.now(ZoneId.of("Europe/London"));
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.GERMANY);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.UK);
         String dateStr = "Date: " + dtf.format(nowGMT);
 
         for(int i = 0; i < dateStr.length(); i++) {

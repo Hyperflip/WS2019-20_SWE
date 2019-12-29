@@ -27,8 +27,6 @@ public class WebUrl implements Url {
         this.parameters = parameters;
         this.fragment = fragment;
         this.segments = segments;
-
-        //this.printGetters();
     }
 
     @Override
@@ -55,7 +53,6 @@ public class WebUrl implements Url {
     // purpose unknown
     @Override
     public String[] getSegments() {
-
         return this.segments;
     }
 

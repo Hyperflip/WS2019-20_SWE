@@ -31,16 +31,15 @@ public class TestServer {
         }
 
         Request req = new RequestFactory().getWebRequest(in);
-        Response resp = new WebResponse();
-
         Plugin plugin = new TestPlugin();
+        Response resp = null;
         if(plugin.canHandle(req) == 1) {
-            resp.setStatusCode(200);
-            resp.setContent((InputStream) plugin.handle(req));
+            resp = plugin.handle(req);
         }
 
         assert this.socket != null;
         OutputStream out = this.socket.getOutputStream();
+        assert resp != null;
         resp.send(out);
 
     }

@@ -133,7 +133,8 @@ public class UrlFactory {
     }
 
     private void parseFullPath(String path_only) {
-        this.path = path_only.substring(0, path_only.lastIndexOf("/"));
+        if(path_only.equals("/")) this.path = path_only;
+        else this.path = path_only.substring(0, path_only.lastIndexOf("/"));
 
         String substrResult;
         String[] splitResult;

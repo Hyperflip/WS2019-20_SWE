@@ -63,10 +63,11 @@ public class RequestFactory {
         String line;
 
         System.out.println("PARSING request lines");
-        for(int i = 0; (line = reader.readLine()) != null; i++) {
+        for(int i = 0; (line = reader.readLine()) != null && !line.equals(""); i++) {
             this.lines.add(line);
             System.out.println(i + ": " + line);
         }
+        this.lines.add("");
     }
 
     private boolean parseFirstLine() {
