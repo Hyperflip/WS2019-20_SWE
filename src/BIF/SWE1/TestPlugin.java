@@ -26,7 +26,7 @@ public class TestPlugin implements Plugin {
         */
 
         // special case where url = "/"
-        if(url.getPath().equals("/")) return 0;
+        if(url.getPath().equals("/")) return 0.1f;
 
         // if there are more than 1 segments of path
         if(url.getSegments().length > 1) {

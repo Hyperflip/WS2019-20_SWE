@@ -26,3 +26,5 @@ Philipp Andert		27.12.2019		Fortschritt UE3, writing Response	1:45
 Philipp Andert		28.12.2019		Fortschritt UE3, bis auf 1 Test		3:00
 
 Philipp Andert		29.12.2019		Anpassen TestPlugin, Url parsing, etc.	1:30
+
+Philipp Andert		29.12.2019		Socket + Threading			0:40

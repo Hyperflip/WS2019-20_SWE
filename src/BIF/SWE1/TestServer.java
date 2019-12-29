@@ -13,7 +13,6 @@ public class TestServer {
     private Socket socket;
     private ServerSocket server;
     private DataInputStream in;
-    private Socket cliSocket;
 
     TestServer() throws IOException {
         try {
