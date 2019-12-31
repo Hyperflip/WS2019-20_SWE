@@ -19,7 +19,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Server server = new Server(8080);
+        Server server = new Server(80);
 
         // accept clients and pass socket to ClientHandler in new thread
         Socket socket = new Socket();
@@ -35,6 +35,7 @@ public class Server {
 
             System.out.println("Client accepted");
             Thread thread = new Thread(new ClientHandler(socket));
+            thread.start();
         }
     }
 }

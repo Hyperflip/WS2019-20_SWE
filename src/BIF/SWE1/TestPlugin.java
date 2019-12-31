@@ -95,6 +95,9 @@ public class TestPlugin implements Plugin {
         Response resp = new WebResponse();
         resp.setStatusCode(200);
         resp.setContent(content);
+        resp.addHeader("Content-Length", String.valueOf(resp.getContentLength()));
+        resp.addHeader("Content-Type", "text/html");
+        resp.addHeader("Connection", "Closed");
 
         return resp;
     }

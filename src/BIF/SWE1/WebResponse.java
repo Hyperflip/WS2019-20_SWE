@@ -40,8 +40,8 @@ public class WebResponse implements Response {
         this.content = null;
     }
 
-    private void setContentLength() throws UnsupportedEncodingException {
-        this.contentLength = this.content.getBytes("UTF-8").length;
+    private void calculateContentLength(String content) throws UnsupportedEncodingException {
+        this.contentLength = content.getBytes("UTF-8").length;
     }
 
     private void writeVersionToStream(ByteArrayOutputStream out) {
@@ -155,7 +155,6 @@ public class WebResponse implements Response {
     @Override
     public int getContentLength() {
         if(this.content == null) return 0;
-
         return this.contentLength;
     }
 
@@ -213,7 +212,7 @@ public class WebResponse implements Response {
         this.content = content;
 
         try {
-            this.setContentLength();
+            this.calculateContentLength(content);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

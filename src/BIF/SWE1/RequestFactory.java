@@ -67,6 +67,7 @@ public class RequestFactory {
             this.lines.add(line);
             System.out.println(i + ": " + line);
         }
+
         this.lines.add("");
     }
 
