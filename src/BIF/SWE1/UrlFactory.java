@@ -10,7 +10,8 @@ public class UrlFactory {
         ONLY_PATH,
         NO_QUERY,
         NO_FRAGMENT,
-        FULL_URL
+        FULL_URL,
+        MAIN_PAGE
     }
 
     // results of split at "#"
@@ -80,7 +81,14 @@ public class UrlFactory {
                 this.parseParameters(this.query);
 
                 return new WebUrl(url_raw, this.path_full, this.filename, this.extension, this.parameters, this.fragment, this.segments);
+            case MAIN_PAGE:
+                System.out.println(UrlType.MAIN_PAGE + "\n");
 
+                this.path_full = "/main.html";
+                this.parseFullPath(this.path_full);
+                this.parseSegments();
+
+                return new WebUrl(url_raw, this.path_full, this.filename, this.extension, null, null, this.segments);
             default:
                 System.out.println("Error detecting URL type");
                 break;
@@ -102,6 +110,10 @@ public class UrlFactory {
 
     // detect the type of URL, so the parsing can be done correctly
     private UrlType detectUrlType(String url) {
+        if(url.length() == 1) {
+            return UrlType.MAIN_PAGE;
+        }
+
         if(!url.contains("?") && !url.contains("#")) {
             return UrlType.ONLY_PATH;
         }
@@ -133,8 +145,7 @@ public class UrlFactory {
     }
 
     private void parseFullPath(String path_only) {
-        if(path_only.equals("/")) this.path = path_only;
-        else this.path = path_only.substring(0, path_only.lastIndexOf("/"));
+        this.path = path_only.substring(0, path_only.lastIndexOf("/"));
 
         String substrResult;
         String[] splitResult;

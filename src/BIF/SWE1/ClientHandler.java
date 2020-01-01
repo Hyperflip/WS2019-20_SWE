@@ -29,6 +29,8 @@ public class ClientHandler implements Runnable {
         this.out = this.socket.getOutputStream();
     }
 
+
+    // TODO: implement this
     private Plugin getOptimalPlugin(Request req) {
         return null;
     }
@@ -46,14 +48,18 @@ public class ClientHandler implements Runnable {
 
         Request req = new RequestFactory().getWebRequest(this.in);
 
+        // TODO: dynamic plugin scoring, reworking + refactoring
 
-        // TODO: refactor + do properly:
-        Plugin plugin = new TestPlugin();
-        Response resp = null;
+        // assuming that StaticGetPlugin scored highest...
 
-        if(plugin.canHandle(req) == 0.1f) {
+        Response resp = new WebResponse();
+
+        Plugin plugin = new StaticGetPlugin();
+
+        if(!req.isValid() || plugin.canHandle(req) == 0)
+            resp = StaticGetPlugin.constructErrorResponse(500);
+        else
             resp = plugin.handle(req);
-        }
 
         if(resp != null) {
             resp.send(out);

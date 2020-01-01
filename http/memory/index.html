@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+	
+	<meta charset="UTF-8">
+	<title>Memory</title>
+	
+	<script>
+	
+		// paare (0, 8); (1, 9); (2, 10); ...
+		
+		var clicked = 0, totalClicks = 0, startTime, endTime, totalTime, bla = 0;
+		var i, img;
+		var p1, p2, solved = 0;
+		
+		function klickbar() {
+			for(i = 0; i < 16; i++) {
+				document.getElementById("b" + i).disabled = false;
+			}
+			
+			if(Math.abs(p1 - p2) == 8){
+			
+				document.getElementById("b" + p1).removeAttribute("onclick");
+				document.getElementById("b" + p2).removeAttribute("onclick");
+				document.getElementById(p1).src = "pics/memoryBgI.png";
+				document.getElementById(p2).src = "pics/memoryBgI.png";
+				
+				solved++;
+				
+			}
+			else {
+				document.getElementById(p1).src = "pics/memoryBg.png";
+				document.getElementById(p2).src = "pics/memoryBg.png";
+			}
+			
+			clicked = 0;
+			p1 = null;
+			p2 = null;
+			
+			if(solved == 8) {
+				endTime = new Date();
+				totalTime = (endTime.getTime() - startTime.getTime()) / 1000;
+				setTimeout(function () {alert("Wir haben eine/n Gewinner/in!\n"
+					+ totalClicks + " mal geklickt\n" + "gebrauchte Zeit: " + totalTime + " Sekunden")}, 1000);
+			}
+		}
+	
+		function umdrehen(id) {
+			
+			if(bla == 0){
+				startTime = new Date();
+				bla = 1;
+			}
+				
+			totalClicks++;
+			
+			clicked++;
+			console.log("clicked: " + clicked + " time(s)");
+			if(clicked > 1){
+				for(i = 0; i < 16; i++) {
+					document.getElementById("b" + i).disabled = true;
+				}
+				setTimeout(function () {klickbar();}, 1000);
+			}
+			
+			for(i = 0; i < 16; i++) {
+				img = i % 8 + 1;
+				switch(id) {
+					case i: document.getElementById(i).src = "pics/card" + img + ".png"; break;
+				}
+			}
+			
+			if(clicked == 1) {
+				p1 = id;
+			}
+			else if(clicked == 2) {
+				p2 = id;
+			}
+			
+			console.log(p1, p2);
+			
+		}
+	
+	</script>
+	
+	<style type="text/css">
+	
+		div {
+			padding: 5px;
+		}
+		
+		button {
+			outline: none;
+			border: none;
+			background-color: Transparent;
+		}
+	
+	</style>
+	
+	</head>
+
+<body>
+
+	<div>
+		<table>
+		
+			<tr>
+				<td> <button id="b0" onclick="umdrehen(0)"> <img id="0" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b1" onclick="umdrehen(1)"> <img id="1" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b2" onclick="umdrehen(2)"> <img id="2" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b3" onclick="umdrehen(3)"> <img id="3" src="pics/memoryBg.png"> </button> </td>
+			</tr>
+			<tr>
+				<td> <button id="b4" onclick="umdrehen(4)"> <img id="4" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b5" onclick="umdrehen(5)"> <img id="5" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b6" onclick="umdrehen(6)"> <img id="6" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b7" onclick="umdrehen(7)"> <img id="7" src="pics/memoryBg.png"> </button> </td>
+			</tr>
+			<tr>
+				<td> <button id="b8" onclick="umdrehen(8)"> <img id="8" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b9" onclick="umdrehen(9)"> <img id="9" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b10" onclick="umdrehen(10)"> <img id="10" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b11" onclick="umdrehen(11)"> <img id="11" src="pics/memoryBg.png"> </button> </td>
+			</tr>
+			<tr>
+				<td> <button id="b12" onclick="umdrehen(12)"> <img id="12" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b13" onclick="umdrehen(13)"> <img id="13" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b14" onclick="umdrehen(14)"> <img id="14" src="pics/memoryBg.png"> </button> </td>
+				<td> <button id="b15" onclick="umdrehen(15)"> <img id="15" src="pics/memoryBg.png"> </button> </td>
+			</tr>
+
+		</table>
+	</div>
+
+</body>
+
+</html>

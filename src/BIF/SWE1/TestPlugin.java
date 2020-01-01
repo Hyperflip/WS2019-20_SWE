@@ -41,35 +41,6 @@ public class TestPlugin implements Plugin {
         }
     }
 
-    private String getRequestedFilePath() {
-        String workingDir = System.getProperty("user.dir");
-        String filePath = "/test/main.html";
-
-        if(this.score == 1) {
-            filePath = this.url.getPath();
-        }
-
-        return workingDir + filePath;
-    }
-
-    private String getFileContentString(String path) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            FileReader fr = new FileReader(path);
-            BufferedReader br = new BufferedReader(fr);
-            String line;
-            while((line = br.readLine()) != null) {
-                sb.append(line);
-                sb.append("\n");
-            }
-            fr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sb.toString();
-    }
-
     @Override
     public float canHandle(Request req) {
 
@@ -88,11 +59,28 @@ public class TestPlugin implements Plugin {
         // set score if if hasn't been yet
         if(this.score == -1) this.score = this.canHandle(req);
 
+
+        Response resp = new WebResponse();
         // get content of file
-        String content = this.getFileContentString(this.getRequestedFilePath());
+        String content;
+        ResourceCollector rc = new ResourceCollector(this.url.getPath());
+        try {
+            rc.getFileReader();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            resp.setStatusCode(404);
+            return resp;
+        }
+
+        try {
+            content = rc.getContentAsString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            resp.setStatusCode(500);
+            return resp;
+        }
 
         // create response with content
-        Response resp = new WebResponse();
         resp.setStatusCode(200);
         resp.setContent(content);
         resp.addHeader("Content-Length", String.valueOf(resp.getContentLength()));

@@ -12,7 +12,7 @@ import java.util.*;
 
 public class WebResponse implements Response {
 
-    private static Map<Integer, String> validStatusCodes;
+    public static Map<Integer, String> validStatusCodes;
     static {
         validStatusCodes = new HashMap<>();
         validStatusCodes.put(200, "OK");
@@ -230,6 +230,7 @@ public class WebResponse implements Response {
 
     @Override
     public void send(OutputStream network) {
+        System.out.println("sending response...");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
