@@ -6,12 +6,12 @@ import java.net.Socket;
 
 public class Server {
 
-    private ServerSocket socket;
+    private ServerSocket listener;
 
     Server(int port) {
         // set up a ServerSocket
         try {
-            this.socket = new ServerSocket(port);
+            this.listener = new ServerSocket(port);
             System.out.println("Server started");
         } catch (IOException e) {
             e.printStackTrace();
@@ -27,8 +27,8 @@ public class Server {
             System.out.println("Waiting for a client...");
 
             try {
-                assert server.socket != null;
-                socket = server.socket.accept();
+                if(server.listener != null)
+                socket = server.listener.accept();
             } catch (IOException e) {
                 e.printStackTrace();
             }

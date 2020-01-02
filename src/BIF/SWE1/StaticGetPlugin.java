@@ -41,17 +41,10 @@ public class StaticGetPlugin implements Plugin {
         ResourceCollector rc = new ResourceCollector(req.getUrl().getPath());
         Response resp = new WebResponse();
 
+        byte[] content;
         try {
-            rc.getFileReader();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-            // return error code 404 response
-            return constructErrorResponse(404);
-        }
-
-        try {
-            String content = rc.getContentAsString();
+            
+            content = rc.getContentAsByteArray();
             resp.setStatusCode(200);
             resp.setContent(content);
 
@@ -67,10 +60,13 @@ public class StaticGetPlugin implements Plugin {
             return resp;
 
         } catch (IOException e) {
-            e.printStackTrace();
 
-            // return error code 500 response
-            return constructErrorResponse(500);
+            e.printStackTrace();
+            return constructErrorResponse(404);
+
         }
+
+
+
     }
 }

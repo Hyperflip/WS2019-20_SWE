@@ -42,33 +42,31 @@ public class ClientHandler implements Runnable {
         try {
             this.setDataInputStream();
             this.setOutputStream();
+
+            Request req = new RequestFactory().getWebRequest(this.in);
+
+            // TODO: dynamic plugin scoring, reworking + refactoring
+
+            // assuming that StaticGetPlugin scored highest...
+
+            Response resp = new WebResponse();
+
+            Plugin plugin = new StaticGetPlugin();
+
+            if(!req.isValid() || plugin.canHandle(req) == 0)
+                resp = StaticGetPlugin.constructErrorResponse(500);
+            else
+                resp = plugin.handle(req);
+
+            if(resp != null)
+                resp.send(out);
+            else
+                throw new IOException("Response object is null");
+
+            this.socket.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Request req = new RequestFactory().getWebRequest(this.in);
-
-        // TODO: dynamic plugin scoring, reworking + refactoring
-
-        // assuming that StaticGetPlugin scored highest...
-
-        Response resp = new WebResponse();
-
-        Plugin plugin = new StaticGetPlugin();
-
-        if(!req.isValid() || plugin.canHandle(req) == 0)
-            resp = StaticGetPlugin.constructErrorResponse(500);
-        else
-            resp = plugin.handle(req);
-
-        if(resp != null) {
-            resp.send(out);
-        }
-        else try {
-            throw new IOException("Response object is null");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }

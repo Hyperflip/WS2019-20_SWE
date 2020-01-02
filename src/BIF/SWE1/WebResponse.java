@@ -27,8 +27,8 @@ public class WebResponse implements Response {
     private Map<String, String> headers;
 
     private String contentType;
-    private int contentLength;
     private String content;
+    private ByteArrayOutputStream contentStream;
 
     WebResponse() {
         System.out.println("constructing WebResponse...");
@@ -38,10 +38,7 @@ public class WebResponse implements Response {
         this.headers = new HashMap<>();
         this.serverHeader = "BIF-SWE1-Server";
         this.content = null;
-    }
-
-    private void calculateContentLength(String content) throws UnsupportedEncodingException {
-        this.contentLength = content.getBytes("UTF-8").length;
+        this.contentStream = new ByteArrayOutputStream();
     }
 
     private void writeVersionToStream(ByteArrayOutputStream out) {
@@ -72,6 +69,7 @@ public class WebResponse implements Response {
             out.write(statusText.charAt(i));
         }
         // write newline
+        out.write('\r');
         out.write('\n');
     }
 
@@ -83,6 +81,7 @@ public class WebResponse implements Response {
         for(int i = 0; i < dateStr.length(); i++) {
             out.write(dateStr.charAt(i));
         }
+        out.write('\r');
         out.write('\n');
     }
 
@@ -93,6 +92,7 @@ public class WebResponse implements Response {
             out.write(header.charAt(i));
         }
         // write newline
+        out.write('\r');
         out.write('\n');
     }
 
@@ -112,15 +112,16 @@ public class WebResponse implements Response {
                 out.write(valueStr.charAt(i));
             }
             // write newline
+            out.write('\r');
             out.write('\n');
         }
     }
 
     private void writeContentToStream(ByteArrayOutputStream out) {
-        byte[] utf8Str = this.content.getBytes(StandardCharsets.UTF_8);
-        // write content
-        for (byte b : utf8Str) {
-            out.write(b);
+        try {
+            out.write(this.contentStream.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -135,6 +136,7 @@ public class WebResponse implements Response {
         this.writeDateHeaderToStream(out);
         this.writeServerHeaderToStream(out);
         this.writeHeadersToStream(out);
+        out.write('\r');
         out.write('\n');    // header end line
 
         if(this.getContentType() != null && this.getContentLength() == 0) {
@@ -154,8 +156,7 @@ public class WebResponse implements Response {
 
     @Override
     public int getContentLength() {
-        if(this.content == null) return 0;
-        return this.contentLength;
+        return this.contentStream.size();
     }
 
     @Override
@@ -209,18 +210,21 @@ public class WebResponse implements Response {
 
     @Override
     public void setContent(String content) {
-        this.content = content;
-
+        byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         try {
-            this.calculateContentLength(content);
-        } catch (UnsupportedEncodingException e) {
+            this.contentStream.write(bytes);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void setContent(byte[] content) {
-
+        try {
+            this.contentStream.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -247,6 +251,7 @@ public class WebResponse implements Response {
         byte[] arr = out.toByteArray();
         try {
             network.write(arr);
+            network.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

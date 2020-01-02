@@ -32,3 +32,6 @@ Philipp Andert		29.12.2019		Socket + Threading			0:40
 Philipp Andert		31.12.2019		Arbeiten an Server			1:00
 
 Philipp Andert		01.01.2020		Arbeiten an Server			2:00
+
+Philipp Andert		02.01.2020		Arbeiten an Server			1:30
+						(Überarbeiten)

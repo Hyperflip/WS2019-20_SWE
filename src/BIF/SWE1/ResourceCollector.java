@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ResourceCollector {
 
@@ -36,4 +39,8 @@ public class ResourceCollector {
         return sb.toString();
     }
 
+    public byte[] getContentAsByteArray() throws IOException {
+        Path fileLocation = Paths.get(this.pathAbs);
+        return Files.readAllBytes(fileLocation);
+    }
 }
