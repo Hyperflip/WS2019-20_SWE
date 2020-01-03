@@ -6,12 +6,18 @@ import BIF.SWE1.interfaces.Response;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StaticGetPlugin implements Plugin {
 
     /*
     this plugin only handles GET requests without parameters or fragments in the URL
     */
+
+    private static List<String> imgExtensions = Arrays.asList("ico", "jpg", "jpeg", "gif", "png", "tif");
 
     public static Response constructErrorResponse(int code) {
         Response resp = new WebResponse();
@@ -26,6 +32,10 @@ public class StaticGetPlugin implements Plugin {
         resp.addHeader("Connection", "Closed");
 
         return resp;
+    }
+
+    private boolean checkIfImageFile(String ext) {
+        return imgExtensions.contains(ext);
     }
 
     @Override
@@ -51,7 +61,14 @@ public class StaticGetPlugin implements Plugin {
             // TODO: detect extension properly and set content-type accordingly
 
             String ext = req.getUrl().getExtension();
-            String type = "text/" + ext;
+            String type;
+
+            if(this.checkIfImageFile(ext))
+                type = "image/";
+            else
+                type = "text/";
+
+            type += ext;
 
             resp.addHeader("Content-Length", String.valueOf(resp.getContentLength()));
             resp.addHeader("Content-Type", type);

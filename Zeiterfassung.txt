@@ -35,3 +35,6 @@ Philipp Andert		01.01.2020		Arbeiten an Server			2:00
 
 Philipp Andert		02.01.2020		Arbeiten an Server			1:30
 						(Überarbeiten)
+
+Philipp Andert		03.01.2019		Fixed content-type setting		0:15
+						for image files
