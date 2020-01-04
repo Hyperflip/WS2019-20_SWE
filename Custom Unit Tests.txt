@@ -1,1 +1,5 @@
-CustomUE bzw. CustomTest mit x Tests
+CustomUE1:
+
+5 unit tests, die das Evaluieren des Url-Typs von UrlFactory überprüfen.
+Geprüft wird, ob 5 der 6 Werte des Enums UrlType richtig gesetzt werden:
+	ONLY_PATH, NO_QUERY, NO_FRAGMENT, FULL_URL, MAIN_PAGE

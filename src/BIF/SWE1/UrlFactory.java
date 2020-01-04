@@ -6,13 +6,16 @@ import java.util.HashMap;
 
 public class UrlFactory {
 
-    enum UrlType {
+    public enum UrlType {
         ONLY_PATH,
         NO_QUERY,
         NO_FRAGMENT,
         FULL_URL,
-        MAIN_PAGE
+        MAIN_PAGE,
+        UNDEFINED
     }
+
+    public UrlType urlType;
 
     // results of split at "#"
     private String url_without_fragment;
@@ -43,6 +46,7 @@ public class UrlFactory {
         System.out.print("Url is of type ");
         switch(type) {
             case ONLY_PATH:
+                this.urlType = UrlType.ONLY_PATH;
                 System.out.print(UrlType.ONLY_PATH + "\n");
 
                 this.path_full = url_raw;
@@ -52,6 +56,7 @@ public class UrlFactory {
                 return new WebUrl(url_raw, this.path_full, this.filename, this.extension, null, null, this.segments);
 
             case NO_QUERY:
+                this.urlType = UrlType.NO_QUERY;
                 System.out.print(UrlType.NO_QUERY + "\n");
 
                 this.splitAtFragmentDelimiter(url_raw);
@@ -62,6 +67,7 @@ public class UrlFactory {
                 return new WebUrl(url_raw, this.path_full, this.filename, this.extension, null, this.fragment, this.segments);
 
             case NO_FRAGMENT:
+                this.urlType = UrlType.NO_FRAGMENT;
                 System.out.print(UrlType.NO_FRAGMENT + "\n");
 
                 this.splitAtQueryDelimiter(url_raw);
@@ -72,6 +78,7 @@ public class UrlFactory {
                 return new WebUrl(url_raw, this.path_full, this.filename, this.extension, this.parameters, null, this.segments);
 
             case FULL_URL:
+                this.urlType = UrlType.FULL_URL;
                 System.out.print(UrlType.FULL_URL + "\n");
 
                 this.splitAtFragmentDelimiter(url_raw);
@@ -82,6 +89,7 @@ public class UrlFactory {
 
                 return new WebUrl(url_raw, this.path_full, this.filename, this.extension, this.parameters, this.fragment, this.segments);
             case MAIN_PAGE:
+                this.urlType = UrlType.MAIN_PAGE;
                 System.out.println(UrlType.MAIN_PAGE + "\n");
 
                 this.path_full = "/main.html";
@@ -90,6 +98,7 @@ public class UrlFactory {
 
                 return new WebUrl(url_raw, this.path_full, this.filename, this.extension, null, null, this.segments);
             default:
+                this.urlType = UrlType.UNDEFINED;
                 System.out.println("Error detecting URL type");
                 break;
         }

@@ -21,6 +21,6 @@ public class UEB3 {
 	}
 
 	public Plugin getTestPlugin() {
-		return new TestPlugin();
+		return null;
 	}
 }

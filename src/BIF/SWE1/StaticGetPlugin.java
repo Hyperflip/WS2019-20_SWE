@@ -4,12 +4,12 @@ import BIF.SWE1.interfaces.Plugin;
 import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StaticGetPlugin implements Plugin {
 
@@ -38,6 +38,11 @@ public class StaticGetPlugin implements Plugin {
         return imgExtensions.contains(ext);
     }
 
+    private byte[] getContentAsByteArray(String path) throws IOException {
+        Path fileLocation = Paths.get(path);
+        return Files.readAllBytes(fileLocation);
+    }
+
     @Override
     public float canHandle(Request req) {
         if(req.getMethod().toUpperCase().equals("GET") && req.getUrl().getParameterCount() == 0 && req.getUrl().getFragment() == null)
@@ -48,17 +53,17 @@ public class StaticGetPlugin implements Plugin {
 
     @Override
     public Response handle(Request req) {
-        ResourceCollector rc = new ResourceCollector(req.getUrl().getPath());
+        String path = req.getUrl().getPath();
         Response resp = new WebResponse();
 
         byte[] content;
         try {
-            
-            content = rc.getContentAsByteArray();
+            if(path.equals("/")) path = "/index.html";
+            String pathAbs = System.getProperty("user.dir") + "/http" + path;
+            content = this.getContentAsByteArray(pathAbs);
+
             resp.setStatusCode(200);
             resp.setContent(content);
-
-            // TODO: detect extension properly and set content-type accordingly
 
             String ext = req.getUrl().getExtension();
             String type;
