@@ -1,8 +1,10 @@
-package BIF.SWE1;
+package BIF.SWE1.plugins;
 
+import BIF.SWE1.WebResponse;
 import BIF.SWE1.interfaces.Plugin;
 import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
+import BIF.SWE1.interfaces.Url;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,21 +21,6 @@ public class StaticGetPlugin implements Plugin {
 
     private static List<String> imgExtensions = Arrays.asList("ico", "jpg", "jpeg", "gif", "png", "tif");
 
-    public static Response constructErrorResponse(int code) {
-        Response resp = new WebResponse();
-        String content = "<html><body><h1>" +
-                String.valueOf(code) + " " + WebResponse.validStatusCodes.get(code) +
-                "</h1></body></html>";
-
-        resp.setStatusCode(code);
-        resp.setContent(content);
-        resp.addHeader("Content-Length", String.valueOf(resp.getContentLength()));
-        resp.addHeader("Content-Type", "text/html");
-        resp.addHeader("Connection", "Closed");
-
-        return resp;
-    }
-
     private boolean checkIfImageFile(String ext) {
         return imgExtensions.contains(ext);
     }
@@ -45,10 +32,24 @@ public class StaticGetPlugin implements Plugin {
 
     @Override
     public float canHandle(Request req) {
-        if(req.getMethod().toUpperCase().equals("GET") && req.getUrl().getParameterCount() == 0 && req.getUrl().getFragment() == null)
-            return 1;
-        else
-            return 0;
+        // exit condition
+        if(!req.isValid()) return 0;
+
+        Url url = req.getUrl();
+        String method = req.getMethod().toUpperCase();
+
+        // check method
+        if(!method.equals("GET")) return 0;
+
+        float score = 1;
+
+        // scoring based on fragment
+        if(url.getFragment() != null) score = 0.5f;
+
+        // scoring based on query
+        if(url.getParameterCount() != 0) score = 0.1f;
+
+        return score;
     }
 
     @Override
@@ -58,8 +59,7 @@ public class StaticGetPlugin implements Plugin {
 
         byte[] content;
         try {
-            if(path.equals("/")) path = "/index.html";
-            String pathAbs = System.getProperty("user.dir") + "/http" + path;
+            String pathAbs = System.getProperty("user.dir") + "\\http" + path;
             content = this.getContentAsByteArray(pathAbs);
 
             resp.setStatusCode(200);
@@ -84,11 +84,8 @@ public class StaticGetPlugin implements Plugin {
         } catch (IOException e) {
 
             e.printStackTrace();
-            return constructErrorResponse(404);
+            return WebResponse.constructErrorResponse(404);
 
         }
-
-
-
     }
 }

@@ -1,0 +1,13 @@
+------------------------------------
+ErrorPlugin
+
+immer			...	0.01
+
+------------------------------------
+StaticGetPlugin
+
+kein GET request 	...	0
+Fragment vorhanden 	...	0.5
+Query vorhanden		...	0.1
+
+------------------------------------

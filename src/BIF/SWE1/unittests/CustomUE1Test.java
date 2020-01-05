@@ -39,7 +39,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 		UrlFactory factory = createInstance().getUrlFactory();
 		Url obj = factory.getWebUrl("/test/folder/image.jpg");
 
-		assertNotNull("Custom.GetWebUrl returned null", obj);
+		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
 		assertEquals(UrlFactory.UrlType.ONLY_PATH, factory.urlType);
 	}
@@ -50,7 +50,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 		UrlFactory factory = createInstance().getUrlFactory();
 		Url obj = factory.getWebUrl("/test/folder/image.jpg#foo");
 
-		assertNotNull("Custom.GetWebUrl returned null", obj);
+		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
 		assertEquals(UrlFactory.UrlType.NO_QUERY, factory.urlType);
 	}
@@ -61,7 +61,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 		UrlFactory factory = createInstance().getUrlFactory();
 		Url obj = factory.getWebUrl("/test/folder/image.jpg?x=1&y=2");
 
-		assertNotNull("Custom.GetWebUrl returned null", obj);
+		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
 		assertEquals(UrlFactory.UrlType.NO_FRAGMENT, factory.urlType);
 	}
@@ -72,7 +72,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 		UrlFactory factory = createInstance().getUrlFactory();
 		Url obj = factory.getWebUrl("/test/folder/image.jpg?x=1&y=2#foo");
 
-		assertNotNull("Custom.GetWebUrl returned null", obj);
+		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
 		assertEquals(UrlFactory.UrlType.FULL_URL, factory.urlType);
 	}
@@ -83,7 +83,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 		UrlFactory factory = createInstance().getUrlFactory();
 		Url obj = factory.getWebUrl("/");
 
-		assertNotNull("Custom.GetWebUrl returned null", obj);
+		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
 		assertEquals(UrlFactory.UrlType.MAIN_PAGE, factory.urlType);
 	}

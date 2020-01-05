@@ -41,3 +41,7 @@ Alfred Emsenhuber				for image files
 
 Philipp Andert		04.01.2019		WIP dynamic plugins			3:30
 Alfred Emsenhuber
+
+Philipp Andert
+Alfred Emsenhuber	05.01.2019		PluginManager implemented		3:00
+						more unit tests

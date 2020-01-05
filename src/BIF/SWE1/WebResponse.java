@@ -30,7 +30,7 @@ public class WebResponse implements Response {
     private String content;
     private ByteArrayOutputStream contentStream;
 
-    WebResponse() {
+    public WebResponse() {
         System.out.println("constructing WebResponse...");
 
         this.version = "HTTP/1.1";
@@ -147,6 +147,21 @@ public class WebResponse implements Response {
         }
 
         return out;
+    }
+
+    public static Response constructErrorResponse(int code) {
+        Response resp = new WebResponse();
+        String content = "<html><body><h1>" +
+                String.valueOf(code) + " " + validStatusCodes.get(code) +
+                "</h1></body></html>";
+
+        resp.setStatusCode(code);
+        resp.setContent(content);
+        resp.addHeader("Content-Length", String.valueOf(resp.getContentLength()));
+        resp.addHeader("Content-Type", "text/html");
+        resp.addHeader("Connection", "Closed");
+
+        return resp;
     }
 
     @Override

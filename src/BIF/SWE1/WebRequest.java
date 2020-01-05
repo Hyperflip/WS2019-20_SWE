@@ -17,14 +17,8 @@ public class WebRequest implements Request {
     private Map<String, String> headers = new HashMap<>();
     private String userAgent;
 
-    // TODO: adjust constructor parameters once RequestFactory is finished
-
-    // on invalid request, no header information is passed
-    WebRequest(boolean valid, String method, Url url, String version) {
-        this.valid = valid;
-        this.method = method;
-        this.url = url;
-        this.version = version;
+    WebRequest() {
+        this.valid = false;
     }
 
     WebRequest(boolean valid, String method, Url url, String version, Map<String, String> headers, int headerCount, String userAgent) {

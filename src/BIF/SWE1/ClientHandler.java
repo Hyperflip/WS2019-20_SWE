@@ -3,12 +3,12 @@ package BIF.SWE1;
 import BIF.SWE1.interfaces.Plugin;
 import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
+import BIF.SWE1.plugins.StaticGetPlugin;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
@@ -29,12 +29,6 @@ public class ClientHandler implements Runnable {
         this.out = this.socket.getOutputStream();
     }
 
-
-    // TODO: implement this
-    private Plugin getOptimalPlugin(Request req) {
-        return null;
-    }
-
     @Override
     public void run() {
         System.out.println("running new thread: " + this);
@@ -44,24 +38,10 @@ public class ClientHandler implements Runnable {
             this.setOutputStream();
 
             Request req = new RequestFactory().getWebRequest(this.in);
+            Plugin plugin = WebPluginManager.getSuitablePluginForRequest(req);
 
-            // TODO: dynamic plugin scoring, reworking + refactoring
-
-            // assuming that StaticGetPlugin scored highest...
-
-            Response resp = new WebResponse();
-
-            Plugin plugin = new StaticGetPlugin();
-
-            if(!req.isValid() || plugin.canHandle(req) == 0)
-                resp = StaticGetPlugin.constructErrorResponse(500);
-            else
-                resp = plugin.handle(req);
-
-            if(resp != null)
-                resp.send(out);
-            else
-                throw new IOException("Response object is null");
+            Response resp = plugin.handle(req);
+            resp.send(out);
 
             this.socket.close();
 

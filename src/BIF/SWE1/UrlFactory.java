@@ -92,7 +92,7 @@ public class UrlFactory {
                 this.urlType = UrlType.MAIN_PAGE;
                 System.out.println(UrlType.MAIN_PAGE + "\n");
 
-                this.path_full = "/main.html";
+                this.path_full = "/index.html";
                 this.parseFullPath(this.path_full);
                 this.parseSegments();
 

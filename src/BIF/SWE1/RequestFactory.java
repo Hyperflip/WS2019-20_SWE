@@ -41,11 +41,11 @@ public class RequestFactory {
         }
 
         // parse first line and check validity of method
-        if((this.valid = this.parseFirstLine())) this.valid = validateMethod();
+        if((this.valid = this.parseFirstLineAndValidateRequest())) this.valid = validateMethod();
 
-        // if invalid, return here without headers, etc.
+        // if invalid, call request constructor without parameters (sets its valid to false)
         if(!this.valid) {
-            return new WebRequest(false, this.method, this.url, this.version);
+            return new WebRequest();
         }
 
         // parse headers and store User-Agent in separate variable
@@ -63,15 +63,20 @@ public class RequestFactory {
         String line;
 
         System.out.println("PARSING request lines");
-        for(int i = 0; (line = reader.readLine()) != null && !line.equals(""); i++) {
-            this.lines.add(line);
-            System.out.println(i + ": " + line);
-        }
+        try {
+            while (reader.ready() && (line = reader.readLine()) != null) {
+                // TODO Support keep-alive connections by spawning a new thread as soon as a new request gets in
+                this.lines.add(line);
+            }
 
-        this.lines.add("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private boolean parseFirstLine() {
+    private boolean parseFirstLineAndValidateRequest() {
+        if(lines.size() == 0) return false;
+
         String[] content = this.lines.get(0).split(" ");
         if(content.length != 3) return false;
 
