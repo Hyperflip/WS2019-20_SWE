@@ -45,3 +45,6 @@ Alfred Emsenhuber
 Philipp Andert
 Alfred Emsenhuber	05.01.2019		PluginManager implemented		3:00
 						more unit tests
+
+Philipp Andert		06.01.2019		Post requests werden gehandhabt		2:00
+Alfred Emsenhuber				ToLowerPlugin implementiert

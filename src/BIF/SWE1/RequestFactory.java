@@ -1,119 +1,71 @@
 package BIF.SWE1;
 
-import BIF.SWE1.interfaces.Url;
+import BIF.SWE1.enums.MethodType;
+import BIF.SWE1.interfaces.Request;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.io.*;
 
 public class RequestFactory {
 
-    private List<String> validMethods = Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE");
+    WebRequest request;
 
-    // BufferedReader from request InputStream
-    private BufferedReader reader;
-    // list of request lines
-    private List<String> lines = new ArrayList<String>();
-    // parsed information from first line
-    private String method;
-    private Url url;
-    private String version;
-    // check validity after parsing first line + validating method
-    private boolean valid;
-    // parsing the header lines
-    private int headerCount;
-    private Map<String, String> headers = new HashMap<>();
-    private String userAgent;
+    public Request getWebRequest(InputStream stream) {
+        this.request = new WebRequest();
 
-
-    public WebRequest getWebRequest(InputStream is) {
-
-        // create BufferedReader from InputStream
-        this.getBufferedReader(is);
-
-        // parse and store all lines of the request
-        try {
-            this.parseRequestLines(this.reader);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // parse first line and check validity of method
-        if((this.valid = this.parseFirstLineAndValidateRequest())) this.valid = validateMethod();
-
-        // if invalid, call request constructor without parameters (sets its valid to false)
-        if(!this.valid) {
-            return new WebRequest();
-        }
-
-        // parse headers and store User-Agent in separate variable
-        this.parseHeaders();
-
-        return new WebRequest(this.valid, this.method, this.url, this.version, this.headers, this.headerCount, this.userAgent);
-    }
-
-    private void getBufferedReader(InputStream is) {
-        InputStreamReader isReader = new InputStreamReader(is);
-        this.reader = new BufferedReader(isReader);
-    }
-
-    private void parseRequestLines(BufferedReader reader) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        System.out.println("Parsing Request Lines...");
         String line;
 
-        System.out.println("PARSING request lines");
+        // Parsing headers for GET and POST
         try {
-            while (reader.ready() && (line = reader.readLine()) != null) {
-                // TODO Support keep-alive connections by spawning a new thread as soon as a new request gets in
-                this.lines.add(line);
+            while (reader.ready() && !(line = reader.readLine()).equals("")) {
+                this.parseRequestLine(line);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    private boolean parseFirstLineAndValidateRequest() {
-        if(lines.size() == 0) return false;
 
-        String[] content = this.lines.get(0).split(" ");
-        if(content.length != 3) return false;
-
-        String urlString;
-        if((urlString = content[1]).isEmpty()) return false;
-
-        if((this.method = content[0]).isEmpty()) return false;
-        if((this.version = content[2]).isEmpty()) return false;
-
-        this.url = new UrlFactory().getWebUrl(urlString);
-
-        System.out.println("PARSING first line");
-        System.out.println("method: " + this.method);
-        System.out.println("url: " + this.url.getRawUrl());
-        System.out.println("version: " + this.version);
-
-        return true;
-    }
-
-    private boolean validateMethod() {
-        return this.validMethods.contains(this.method.toUpperCase());
-    }
-
-    private void parseHeaders() {
-        System.out.println("PARSING headers");
-
-        String line, key, value;
-        for(int i = 1; !(line = this.lines.get(i).trim()).isEmpty(); i++) {
-            this.headerCount++;
-
-            key = line.substring(0, line.indexOf(":"));
-            value = line.substring(line.indexOf(":") + 2);
-
-            if(key.equals("User-Agent")) this.userAgent = value;
-
-            this.headers.put(key.toLowerCase(), value);
-            System.out.println(i + ": key = " + key + ", value = " + value);
+        // Optional if POST
+        if(MethodType.valueOf(this.request.getMethod().toUpperCase()) == MethodType.POST){
+            System.out.println("Parsing Post Content...");
+            try {
+                this.request.setContent(this.parsePostContent(reader));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
+        return this.request;
+    }
+
+    public void parseRequestLine(String line){
+        System.out.println("Line: >" + line + "<");
+        if(this.request.getMethodType() == MethodType.INVALID){
+            String[] result = line.split("\\s");
+            if(result.length == 3){
+                this.request.setMethod(result[0]);
+                this.request.setUrl(result[1]);
+                this.request.setProtocol(result[2]);
+            }
+        }else{
+            String[] result = line.split(":",2);
+            if(result.length == 2){
+                this.request.addHeader(result[0],result[1].trim());
+            }
+        }
+    }
+
+    private String parsePostContent(BufferedReader reader) throws IOException {
+        // TODO Bob der Baubytetser muss hier dann noch builden
+        StringBuilder builder = new StringBuilder();
+        int i = 0;
+
+        // ready() checks if something is ready to be read (works with nextChar and nChars fields)
+        while (reader.ready() && (i = reader.read()) != -1) {
+            builder.append((char) i);
+        }
+
+        return builder.toString();
     }
 }
