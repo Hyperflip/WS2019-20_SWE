@@ -9,6 +9,7 @@ import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
 import BIF.SWE1.plugins.ErrorPlugin;
 import BIF.SWE1.plugins.StaticGetPlugin;
+import BIF.SWE1.plugins.TemperaturePlugin;
 import BIF.SWE1.plugins.ToLowerPlugin;
 import org.junit.*;
 
@@ -66,7 +67,7 @@ public class CustomUE2Test extends AbstractTestFixture<CustomUE2> {
 	/********************* StaticGetPlugin **********************/
 
 	@Test
-	public void StaticGetPlugin_should_score_1_on_suitable_request() throws Exception {
+	public void StaticGetPlugin_should_score_0_point_9_on_suitable_request() throws Exception {
 		CustomUE2 ueb = createInstance();
 
 		PluginManager obj = createInstance().getPluginManager();
@@ -78,7 +79,7 @@ public class CustomUE2Test extends AbstractTestFixture<CustomUE2> {
 		Plugin plugin = ueb.getStaticFilePlugin();
 		assertNotNull("CustomUE2.GetRequest returned null", plugin);
 
-		assertEquals(plugin.canHandle(req), 1f);
+		assertEquals(plugin.canHandle(req), 0.9f);
 	}
 
 	@Test
@@ -163,6 +164,40 @@ public class CustomUE2Test extends AbstractTestFixture<CustomUE2> {
 		assertEquals(plugin.canHandle(req), 0f);
 	}
 
+	/********************* TemperaturePlugin **********************/
+
+	@Test
+	public void TemperaturePlugin_should_score_1_on_suitable_request() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		PluginManager obj = createInstance().getPluginManager();
+		assertNotNull("CustomUE2.GetPluginManager returned null", obj);
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/GetTemperature", "GET"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = ueb.getTemperaturePlugin();
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertEquals(plugin.canHandle(req), 1f);
+	}
+
+	@Test
+	public void TemperaturePlugin_should_score_0_on_unsuitable_request() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		PluginManager obj = createInstance().getPluginManager();
+		assertNotNull("CustomUE2.GetPluginManager returned null", obj);
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/somethingElse", "GET"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = ueb.getTemperaturePlugin();
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertEquals(plugin.canHandle(req), 0f);
+	}
+
 	/********************* WebPluginManager **********************/
 
 	@Test
@@ -202,6 +237,19 @@ public class CustomUE2Test extends AbstractTestFixture<CustomUE2> {
 		assertNotNull("CustomUE2.GetRequest returned null", plugin);
 
 		assertTrue(plugin instanceof ToLowerPlugin);
+	}
+
+	@Test
+	public void WebPluginManager_should_return_TemperaturePlugin() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/GetTemperature", "GET"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = WebPluginManager.getSuitablePluginForRequest(req);
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertTrue(plugin instanceof TemperaturePlugin);
 	}
 
 }

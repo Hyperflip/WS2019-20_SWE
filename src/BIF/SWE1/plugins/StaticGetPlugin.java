@@ -1,11 +1,13 @@
 package BIF.SWE1.plugins;
 
+import BIF.SWE1.Server;
 import BIF.SWE1.WebResponse;
 import BIF.SWE1.interfaces.Plugin;
 import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
 import BIF.SWE1.interfaces.Url;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,7 +43,7 @@ public class StaticGetPlugin implements Plugin {
         // check method
         if(!method.equals("GET")) return 0;
 
-        float score = 1;
+        float score = 0.9f;
 
         // scoring based on fragment
         if(url.getFragment() != null) score = 0.5f;
@@ -59,7 +61,7 @@ public class StaticGetPlugin implements Plugin {
 
         byte[] content;
         try {
-            String pathAbs = System.getProperty("user.dir") + "\\http" + path;
+            String pathAbs = System.getProperty("user.dir") + File.separator + Server.siteDirName + path;
             content = this.getContentAsByteArray(pathAbs);
 
             resp.setStatusCode(200);

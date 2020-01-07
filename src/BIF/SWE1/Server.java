@@ -1,14 +1,17 @@
 package BIF.SWE1;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
 
+    public static String siteDirName;
+
     private ServerSocket listener;
 
-    Server(int port) {
+    Server(int port, String path) {
         // set up a ServerSocket
         try {
             this.listener = new ServerSocket(port);
@@ -16,10 +19,18 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        siteDirName = path;
+
+        WebPluginManager.getPluginManager();
     }
 
     public static void main(String[] args) {
-        Server server = new Server(80);
+        if(args.length != 2) {
+            System.out.println("Usage: port site_directory");
+        }
+
+        Server server = new Server(Integer.parseInt(args[0]), args[1]);
 
         // accept clients and pass socket to ClientHandler in new thread
         Socket socket = new Socket();

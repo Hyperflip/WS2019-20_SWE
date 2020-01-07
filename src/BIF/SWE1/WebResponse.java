@@ -176,12 +176,12 @@ public class WebResponse implements Response {
 
     @Override
     public String getContentType() {
-        return this.contentType;
+        return this.headers.get("Content-Type");
     }
 
     @Override
     public void setContentType(String contentType) {
-        this.contentType = contentType;
+        this.headers.put("Content-Type", contentType);
     }
 
     @Override
@@ -260,7 +260,13 @@ public class WebResponse implements Response {
 
         // print for debugging purposes
         String outStr = out.toString();
-        System.out.println(outStr);
+
+        System.out.println(
+                this.version + " " +
+                this.statusCode + " " +
+                validStatusCodes.get(this.statusCode) + "\r\n" +
+                "Content-Type: " + this.getContentType()
+        );
 
         // write to OutputStream
         byte[] arr = out.toByteArray();

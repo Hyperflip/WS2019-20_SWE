@@ -5,6 +5,7 @@ import BIF.SWE1.interfaces.PluginManager;
 import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.plugins.ErrorPlugin;
 import BIF.SWE1.plugins.StaticGetPlugin;
+import BIF.SWE1.plugins.TemperaturePlugin;
 import BIF.SWE1.plugins.ToLowerPlugin;
 
 import java.io.InputStream;
@@ -32,4 +33,6 @@ public class CustomUE2 {
 	}
 
 	public Plugin getToLowerPlugin() { return new ToLowerPlugin(); }
+
+	public Plugin getTemperaturePlugin() { return new TemperaturePlugin(); }
 }

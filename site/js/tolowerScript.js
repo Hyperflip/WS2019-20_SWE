@@ -6,7 +6,7 @@ function toLowerRequest() {
         }
     };
 
-    xhttp.open("POST", "/ToLower", true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.open("POST", "/tolower.html", true);
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhttp.send("lower=" + document.getElementById("toLowerInput").value);
 }

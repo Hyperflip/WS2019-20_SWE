@@ -10,7 +10,7 @@ invalid request		...	0
 kein GET request 	...	0
 Fragment vorhanden 	...	0.5
 Query vorhanden		...	0.1
-sonst			...	1
+sonst			...	0.9
 
 ------------------------------------
 ToLowerPlugin
@@ -18,5 +18,12 @@ ToLowerPlugin
 invalid request		...	0
 kein POST request &&
 url != "/tolower.html" 	...	0
+sonst			...	1
+------------------------------------
+ToLowerPlugin
+
+invalid request		...	0
+kein GET request &&
+url != "/GetTemperature"...	0
 sonst			...	1
 ------------------------------------

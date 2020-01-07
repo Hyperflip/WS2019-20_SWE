@@ -15,7 +15,7 @@ public class ToLowerPlugin implements Plugin {
         if(MethodType.valueOf(req.getMethod()) == MethodType.POST && req.getUrl().getPath().equals("/tolower.html"))
             return 1;
         else
-            return 0f;
+            return 0;
     }
 
     @Override
