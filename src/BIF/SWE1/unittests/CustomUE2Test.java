@@ -2,11 +2,14 @@ package BIF.SWE1.unittests;
 
 import BIF.SWE1.CustomUE2;
 import BIF.SWE1.UEB5;
+import BIF.SWE1.WebPluginManager;
 import BIF.SWE1.interfaces.Plugin;
 import BIF.SWE1.interfaces.PluginManager;
 import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
+import BIF.SWE1.plugins.ErrorPlugin;
 import BIF.SWE1.plugins.StaticGetPlugin;
+import BIF.SWE1.plugins.ToLowerPlugin;
 import org.junit.*;
 
 import java.io.*;
@@ -124,6 +127,81 @@ public class CustomUE2Test extends AbstractTestFixture<CustomUE2> {
 		assertNotNull("CustomUE2.GetRequest returned null", plugin);
 
 		assertEquals(plugin.canHandle(req), 0f);
+	}
+
+	/********************* ToLowerPlugin **********************/
+
+	@Test
+	public void ToLowerPlugin_should_score_1_on_tolower_request() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		PluginManager obj = createInstance().getPluginManager();
+		assertNotNull("CustomUE2.GetPluginManager returned null", obj);
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/tolower.html", "POST", "tolower=TOLOWER"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = ueb.getToLowerPlugin();
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertEquals(plugin.canHandle(req), 1f);
+	}
+
+	@Test
+	public void ToLowerPlugin_should_score_0_on_GET_request() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		PluginManager obj = createInstance().getPluginManager();
+		assertNotNull("CustomUE2.GetPluginManager returned null", obj);
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/tolower.html", "GET", "tolower=TOLOWER"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = ueb.getToLowerPlugin();
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertEquals(plugin.canHandle(req), 0f);
+	}
+
+	/********************* WebPluginManager **********************/
+
+	@Test
+	public void WebPluginManager_should_return_ErrorPlugin() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		Request req = ueb.getRequest(RequestHelper.getInvalidRequestStream());
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = WebPluginManager.getSuitablePluginForRequest(req);
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertTrue(plugin instanceof ErrorPlugin);
+	}
+
+	@Test
+	public void WebPluginManager_should_return_StaticGetPlugin() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/memory/index.html"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = WebPluginManager.getSuitablePluginForRequest(req);
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertTrue(plugin instanceof StaticGetPlugin);
+	}
+
+	@Test
+	public void WebPluginManager_should_return_ToLowerPlugin() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/tolower.html", "POST", "tolower=TEST"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = WebPluginManager.getSuitablePluginForRequest(req);
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertTrue(plugin instanceof ToLowerPlugin);
 	}
 
 }

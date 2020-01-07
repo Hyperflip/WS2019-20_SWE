@@ -36,15 +36,17 @@ Philipp Andert		01.01.2020		Arbeiten an Server			2:00
 Philipp Andert		02.01.2020		Arbeiten an Server			1:30
 Philipp Ewert					(Überarbeiten)
 
-Philipp Andert		03.01.2019		Fixed content-type setting		0:15
-Alfred Emsenhuber				for image files
+Philipp Andert		03.01.2019		content-type gefixt,			0:15
+Alfred Emsenhuber				was Bilddateien betrifft
 
-Philipp Andert		04.01.2019		WIP dynamic plugins			3:30
+Philipp Andert		04.01.2019		WIP dynamische plugins			3:30
 Alfred Emsenhuber
 
 Philipp Andert
-Alfred Emsenhuber	05.01.2019		PluginManager implemented		3:00
-						more unit tests
+Alfred Emsenhuber	05.01.2019		PluginManager implementiert		3:00
+						Mehr unit tests
 
 Philipp Andert		06.01.2019		Post requests werden gehandhabt		2:00
 Alfred Emsenhuber				ToLowerPlugin implementiert
+
+Philipp Andert		07.01.2019		Mehr unit tests				0:30

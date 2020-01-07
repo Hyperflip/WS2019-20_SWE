@@ -6,7 +6,9 @@ Geprüft wird, ob 5 der 6 Werte des Enums UrlType richtig gesetzt werden:
 
 CustomUE2:
 
-5 unit tests, die das scoring der plugins StaticGetPlugin und ErrorPlugin überprüfen.
+7 unit tests, die das scoring der plugins StaticGetPlugin und ErrorPlugin überprüfen.
+3 unit tests, die prüfen, ob WebPluginManager die richtgen plugins instanziert
+
 Geprüft wird:
 
 StaticGetPlugin scores:
@@ -17,3 +19,12 @@ StaticGetPlugin scores:
 
 ErrorPlugin scores:
 0.01
+
+ToLowerPlugin score:
+1
+0
+
+WebPluginManager returns ErrorPlugin
+WebPluginManager returns StaticGetPlugin
+WebPluginManager returns ToLowerPlugin
+
