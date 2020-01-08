@@ -15,6 +15,16 @@ import java.util.Locale;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+/**
+ * Implements the Plugin interface
+ * Handles all /GetTemperature request.
+ *
+ * If it is a general request all current temperature entries get displayed on a page.
+ * If it is a REST request the plugin returns the temperature as an XML entry.
+ *
+ * Continuously generates new data in a separate thread.
+ */
+
 public class TemperaturePlugin implements Plugin {
 
     private JSONObject temperatureData;
@@ -28,6 +38,10 @@ public class TemperaturePlugin implements Plugin {
 
         new Thread(this::run).start();
     }
+
+    /**
+     * run method of the thread simulating daily entries being made (around every second)
+     */
 
     private void run() {
         String jsonString = "";

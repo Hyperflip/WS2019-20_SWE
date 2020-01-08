@@ -10,6 +10,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * implementation of the Request interface
+ * holds the data of an HTTP request
+ */
+
 public class WebRequest implements Request {
 
     private MethodType method;

@@ -15,6 +15,10 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * plugin that handles static GET requests, returning the content as a response
+ */
+
 public class StaticGetPlugin implements Plugin {
 
     /*

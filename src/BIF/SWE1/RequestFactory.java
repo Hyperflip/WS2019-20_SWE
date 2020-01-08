@@ -5,9 +5,20 @@ import BIF.SWE1.interfaces.Request;
 
 import java.io.*;
 
+/**
+ * Factory for parsing HTTP requests
+ */
+
 public class RequestFactory {
 
     WebRequest request;
+
+    /**
+     * parses an HTTP request and returns a new WebRequest object
+     *
+     * @param stream InputStream sent by the browser
+     * @return new WebRequest object
+     */
 
     public Request getWebRequest(InputStream stream) {
         this.request = new WebRequest();
@@ -57,7 +68,6 @@ public class RequestFactory {
     }
 
     private String parsePostContent(BufferedReader reader) throws IOException {
-        // TODO Bob der Baubytetser muss hier dann noch builden
         StringBuilder builder = new StringBuilder();
         int i = 0;
 

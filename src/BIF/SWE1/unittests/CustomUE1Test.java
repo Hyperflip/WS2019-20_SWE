@@ -3,6 +3,7 @@ package BIF.SWE1.unittests;
 import BIF.SWE1.CustomUE1;
 import BIF.SWE1.UrlFactory;
 import BIF.SWE1.interfaces.Url;
+import BIF.SWE1.enums.UrlType;
 import org.junit.*;
 
 import static org.junit.Assert.assertNotNull;
@@ -41,7 +42,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 
 		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
-		assertEquals(UrlFactory.UrlType.ONLY_PATH, factory.urlType);
+		assertEquals(UrlType.ONLY_PATH, factory.urlType);
 	}
 
 	// UrlType.NO_QUERY
@@ -52,7 +53,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 
 		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
-		assertEquals(UrlFactory.UrlType.NO_QUERY, factory.urlType);
+		assertEquals(UrlType.NO_QUERY, factory.urlType);
 	}
 
 	// UrlType.NO_FRAGMENT
@@ -63,7 +64,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 
 		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
-		assertEquals(UrlFactory.UrlType.NO_FRAGMENT, factory.urlType);
+		assertEquals(UrlType.NO_FRAGMENT, factory.urlType);
 	}
 
 	// UrlType.FULL_URL
@@ -74,7 +75,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 
 		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
-		assertEquals(UrlFactory.UrlType.FULL_URL, factory.urlType);
+		assertEquals(UrlType.FULL_URL, factory.urlType);
 	}
 
 	// UrlType.MAIN_PAGE
@@ -85,7 +86,7 @@ public class CustomUE1Test extends AbstractTestFixture<CustomUE1> {
 
 		assertNotNull("CustomUE1.GetWebUrl returned null", obj);
 
-		assertEquals(UrlFactory.UrlType.MAIN_PAGE, factory.urlType);
+		assertEquals(UrlType.MAIN_PAGE, factory.urlType);
 	}
 
 }

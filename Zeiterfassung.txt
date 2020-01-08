@@ -56,3 +56,5 @@ Alfred Emsenhuber				10.000 Daten + fortlaufend
 
 Philipp Andert		08.01.2019		Temperaturplugin erweitert		2:30
 Alfred Emsenhuber
+
+Philipp Andert		08.01.2019		Javadoc					0:45

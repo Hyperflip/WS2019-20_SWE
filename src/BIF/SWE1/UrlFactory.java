@@ -1,19 +1,15 @@
 package BIF.SWE1;
 
+import BIF.SWE1.enums.UrlType;
 import BIF.SWE1.interfaces.Url;
 
 import java.util.HashMap;
 
-public class UrlFactory {
+/**
+ * Factory for parsing urls
+ */
 
-    public enum UrlType {
-        ONLY_PATH,
-        NO_QUERY,
-        NO_FRAGMENT,
-        FULL_URL,
-        MAIN_PAGE,
-        UNDEFINED
-    }
+public class UrlFactory {
 
     public UrlType urlType;
 
@@ -32,6 +28,13 @@ public class UrlFactory {
     private String[] segments;
     // result of parsing parameters
     private HashMap<String, String> parameters;
+
+    /**
+     * parses a raw url and returns a new WebUrl object
+     *
+     * @param url_raw raw url string
+     * @return new WebUrl object
+     */
 
     public Url getWebUrl(String url_raw) {
 

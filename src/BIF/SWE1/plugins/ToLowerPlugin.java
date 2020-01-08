@@ -6,6 +6,11 @@ import BIF.SWE1.interfaces.Plugin;
 import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
 
+/**
+ * plugin that handles POST requests on url "/tolower.html"
+ * converts form text to lowercase
+ */
+
 public class ToLowerPlugin implements Plugin {
     @Override
     public float canHandle(Request req) {

@@ -5,6 +5,11 @@ import BIF.SWE1.interfaces.Url;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * implementation of the Url interface
+ * holds the data of an url
+ */
+
 public class WebUrl implements Url {
 
     private String rawUrl;

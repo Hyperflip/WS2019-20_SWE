@@ -10,6 +10,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * implementation of the Response interface
+ * holds the data of an HTTP response
+ */
+
 public class WebResponse implements Response {
 
     public static Map<Integer, String> validStatusCodes;

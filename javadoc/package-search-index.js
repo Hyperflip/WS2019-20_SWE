@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"BIF.SWE1"},{"l":"BIF.SWE1.enums"},{"l":"BIF.SWE1.interfaces"},{"l":"BIF.SWE1.plugins"}]

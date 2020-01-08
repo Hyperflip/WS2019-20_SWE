@@ -17,6 +17,12 @@ public class ClientHandler implements Runnable {
     private DataInputStream in;
     private OutputStream out;
 
+    /**
+     * sets socket for this client handler
+     *
+     * @param socket client connection socket
+     */
+
     ClientHandler(Socket socket) {
         this.socket = socket;
     }
@@ -28,6 +34,11 @@ public class ClientHandler implements Runnable {
     private void setOutputStream() throws IOException {
         this.out = this.socket.getOutputStream();
     }
+
+    /**
+     * run method of the client handler thread
+     * handles the response based on the best suitable plugin
+     */
 
     @Override
     public void run() {

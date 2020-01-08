@@ -8,6 +8,10 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * the plugin manager holds the plugin's info and contains methods of managing them
+ */
+
 public class WebPluginManager implements PluginManager {
 
     CopyOnWriteArrayList<Plugin> plugins; // TODO Maybe find a different Collection
@@ -20,6 +24,12 @@ public class WebPluginManager implements PluginManager {
         this.plugins = new CopyOnWriteArrayList<Plugin>();
         this.loadPlugins();
     }
+
+    /**
+     * static function to get the plugin manager
+     *
+     * @return the same instance of PluginManager a la Singleton
+     */
 
     public static PluginManager getPluginManager(){
         if(manager == null){
@@ -37,6 +47,13 @@ public class WebPluginManager implements PluginManager {
             }
         }
     }
+
+    /**
+     * returns the best suitable plugin for performing a task, based on the request
+     *
+     * @param request Incoming HTTP WebRequest object
+     * @return suitable pluing to deal with the request
+     */
 
     public static Plugin getSuitablePluginForRequest(Request request){
         Plugin highestScoring = null;
