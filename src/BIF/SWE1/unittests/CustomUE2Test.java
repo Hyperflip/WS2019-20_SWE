@@ -198,6 +198,38 @@ public class CustomUE2Test extends AbstractTestFixture<CustomUE2> {
 		assertEquals(plugin.canHandle(req), 0f);
 	}
 
+	@Test
+	public void TemperaturePlugin_should_return_html_on_without_REST_parameters() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		PluginManager obj = createInstance().getPluginManager();
+		assertNotNull("CustomUE2.GetPluginManager returned null", obj);
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/GetTemperature", "GET"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = ueb.getTemperaturePlugin();
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertEquals("text/html", plugin.handle(req).getContentType());
+	}
+
+	@Test
+	public void TemperaturePlugin_should_return_xml_on_REST_parameters() throws Exception {
+		CustomUE2 ueb = createInstance();
+
+		PluginManager obj = createInstance().getPluginManager();
+		assertNotNull("CustomUE2.GetPluginManager returned null", obj);
+
+		Request req = ueb.getRequest(RequestHelper.getValidRequestStream("/GetTemperature/2010/08/01", "GET"));
+		assertNotNull("CustomUE2.GetRequest returned null", req);
+
+		Plugin plugin = ueb.getTemperaturePlugin();
+		assertNotNull("CustomUE2.GetRequest returned null", plugin);
+
+		assertEquals("text/xml", plugin.handle(req).getContentType());
+	}
+
 	/********************* WebPluginManager **********************/
 
 	@Test

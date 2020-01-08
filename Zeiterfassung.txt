@@ -53,3 +53,6 @@ Philipp Andert		07.01.2019		Mehr unit tests				0:30
 
 Philipp Andert		07.01.2019		TemperaturePlugin implementiert		4:00
 Alfred Emsenhuber				10.000 Daten + fortlaufend
+
+Philipp Andert		08.01.2019		Temperaturplugin erweitert		2:30
+Alfred Emsenhuber

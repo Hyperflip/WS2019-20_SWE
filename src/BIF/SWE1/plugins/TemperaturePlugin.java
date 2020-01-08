@@ -1,5 +1,6 @@
 package BIF.SWE1.plugins;
 
+import BIF.SWE1.WebResponse;
 import BIF.SWE1.enums.MethodType;
 import BIF.SWE1.interfaces.Plugin;
 import BIF.SWE1.interfaces.Request;
@@ -23,7 +24,7 @@ public class TemperaturePlugin implements Plugin {
         super();
         System.out.println("Starting Temperature Plugin...");
 
-        this.generateData();
+        //this.generateData();
 
         new Thread(this::run).start();
     }
@@ -42,7 +43,7 @@ public class TemperaturePlugin implements Plugin {
 
         ZonedDateTime date = ZonedDateTime.of(Integer.parseInt(result[0]),Integer.parseInt(result[1]),Integer.parseInt(result[2]),1,1,1,1,ZoneId.of("Europe/London"));
 
-        for (int i = 0;true;i++) {
+        for (int i = 0; true; i++) {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -88,12 +89,42 @@ public class TemperaturePlugin implements Plugin {
         }
     }
 
+    private String buildXML(String key, float temp) {
+        return "<?xml version=\"1.0\"?>" +
+                "<TemperatureEntry>" +
+                "<Date>" + key + "</Date>" +
+                "<Temp>" + String.format("%2.2f", temp) + "</Temp>" +
+                "</TemperatureEntry>";
+    }
+
+    private String buildTempPage() {
+        String content = "<html>" +
+                "<head>" +
+                "<link rel=\"shortcut icon\" type=\"image/jpg\" href=\"/favicon.ico?v=2\"/>" +
+                "</head>" +
+                "<body>" +
+                "<table style=\"width:auto\">" +
+                "<tr><th>Date</th><th>Temperature</th></tr>";
+
+        // temperatureData will be null on unit test cases
+        if(temperatureData != null) {
+            for (String key : new TreeSet<String>(temperatureData.keySet())) {
+
+                content += "<tr><td align=\"center\">" + key + "</td>" +
+                        "<td align=\"center\">" + String.format("%05.2f", temperatureData.getFloat(key)) + "</td>" +
+                        "</tr>";
+            }
+        }
+
+        return content += "</table></body></html>";
+    }
+
     @Override
     public float canHandle(Request req) {
         // exit condition
         if (!req.isValid()) return 0;
 
-        if (MethodType.valueOf(req.getMethod()) == MethodType.GET && req.getUrl().getPath().contains("/GetTemperature"))
+        if (MethodType.valueOf(req.getMethod()) == MethodType.GET && req.getUrl().getPath().startsWith("/GetTemperature"))
             return 1;
 
         return 0;
@@ -107,31 +138,59 @@ public class TemperaturePlugin implements Plugin {
         // GET /GetTemperature/2019/01/01
         // XML mit den Werten
 
-        String[] result = req.getUrl().getPath().split("/");
+        String urlStr = req.getUrl().getPath();
 
-        if(result.length == 1){
-            // TODO Return all temperatures
-        }else if(result.length == 4){
-            String day = result[3];
-            String month = result[2];
-            String year = result[1];
+        String queryDate = "";
 
-            // Synchronized
-            float temp = temperatureData.getFloat(year + "-" + month + "-" + day);
-
-
-            /*
-                <TemperatureEntry>
-                    <Date>2020-01-01<\Date>
-                    <Temp>32.038478<\Temp>
-                <\TemperatureEntry>
-             */
-
-            // TODO Return temp as Response
-        }else{
-            // TODO Wrong Rest Request
+        try {
+            queryDate = urlStr.substring(16);
+        }
+        catch(StringIndexOutOfBoundsException e) {
+            System.out.println("no arguments passed. returning page");
         }
 
-        return null;
+        System.out.println("query date: " + queryDate);
+
+        Response resp = new WebResponse();
+        if(queryDate.equals("")) {
+            String content = this.buildTempPage();
+
+            resp.setStatusCode(200);
+            resp.setContent(content);
+
+            resp.addHeader("Content-Length", String.valueOf(resp.getContentLength()));
+            resp.addHeader("Content-Type", "text/html");
+            resp.addHeader("Connection", "Closed");
+
+            return resp;
+        }
+
+        String[] dateContent = queryDate.split("/");
+        if(dateContent.length != 3) {
+            return WebResponse.constructErrorResponse(404);
+        }
+
+        String year = dateContent[0];
+        String month = dateContent[1];
+        String day = dateContent[2];
+
+        String key = year + "-" + month + "-" + day;
+
+        float temperature = 0;
+
+        // temperatureData will be null on unit test cases
+        if(temperatureData != null)
+        temperature = temperatureData.getFloat(key);
+
+        System.out.println(temperature);
+
+        resp.setStatusCode(200);
+        resp.setContent(this.buildXML(key, temperature));
+
+        resp.addHeader("Content-Length", String.valueOf(resp.getContentLength()));
+        resp.addHeader("Content-Type", "text/xml");
+        resp.addHeader("Connection", "Closed");
+
+        return resp;
     }
 }
