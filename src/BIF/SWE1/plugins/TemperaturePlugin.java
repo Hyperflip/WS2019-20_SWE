@@ -5,6 +5,7 @@ import BIF.SWE1.enums.MethodType;
 import BIF.SWE1.interfaces.Plugin;
 import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -69,6 +70,8 @@ public class TemperaturePlugin implements Plugin {
             double rand = Math.random() * 1000;
             double sine = Math.sin(System.currentTimeMillis() + rand);
             float temperature = (float) (Math.abs(sine) * 40);
+
+            System.out.println("generating ... date: " + dateStr + ", temp: " + temperature);
 
             // Synchronized
             temperatureData.put(dateStr, temperature);
@@ -190,11 +193,18 @@ public class TemperaturePlugin implements Plugin {
 
         String key = year + "-" + month + "-" + day;
 
-        float temperature = 0;
+        float temperature = -1;
 
         // temperatureData will be null on unit test cases
-        if(temperatureData != null)
-        temperature = temperatureData.getFloat(key);
+        if(temperatureData != null) {
+            try {
+                temperature = temperatureData.getFloat(key);
+            } catch (JSONException e) {
+                return WebResponse.constructErrorResponse(404);
+            }
+        }
+
+        System.out.println("temp: " + temperature);
 
         System.out.println(temperature);
 

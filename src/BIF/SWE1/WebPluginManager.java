@@ -84,14 +84,19 @@ public class WebPluginManager implements PluginManager {
     public void add(String plugin) {
         for (Plugin plug : plugins) if(plug.getClass().getName().equals(plugin)) return;
 
-        ClassLoader loader = Plugin.class.getClassLoader();
+        //ClassLoader loader = Plugin.class.getClassLoader();
+
         try{
             // TODO Maybe find a way to do this without Intellij being bitchy about it
             System.out.println(System.getProperty("user.dir"));
+
             //Class pluginClass = loader.loadClass("PACKAGE_NAME" + "." + plugin);
+
             Class pluginClass = Class.forName(plugin);
+
             Plugin object;
             object = (Plugin) pluginClass.getDeclaredConstructor().newInstance();
+
             plugins.add(object);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException | ClassNotFoundException e) {
             e.printStackTrace();

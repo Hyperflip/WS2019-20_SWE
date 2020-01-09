@@ -58,3 +58,5 @@ Philipp Andert		08.01.2019		Temperaturplugin erweitert		2:30
 Alfred Emsenhuber
 
 Philipp Andert		08.01.2019		Javadoc					0:45
+
+											28:30	Zeit von Philipp
