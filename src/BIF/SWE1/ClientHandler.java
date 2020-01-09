@@ -5,10 +5,7 @@ import BIF.SWE1.interfaces.Request;
 import BIF.SWE1.interfaces.Response;
 import BIF.SWE1.plugins.StaticGetPlugin;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
@@ -27,12 +24,12 @@ public class ClientHandler implements Runnable {
         this.socket = socket;
     }
 
-    private void setDataInputStream() throws IOException {
-        this.in = new DataInputStream((new BufferedInputStream(this.socket.getInputStream())));
+    private DataInputStream getDataInputStream() throws IOException {
+        return new DataInputStream((new BufferedInputStream(this.socket.getInputStream())));
     }
 
-    private void setOutputStream() throws IOException {
-        this.out = this.socket.getOutputStream();
+    private OutputStream getOutputStream() throws IOException {
+        return this.socket.getOutputStream();
     }
 
     /**
@@ -45,8 +42,8 @@ public class ClientHandler implements Runnable {
         System.out.println("running new thread: " + this);
 
         try {
-            this.setDataInputStream();
-            this.setOutputStream();
+            this.in = this.getDataInputStream();
+            this.out = this.getOutputStream();
 
             Request req = new RequestFactory().getWebRequest(this.in);
             Plugin plugin = WebPluginManager.getSuitablePluginForRequest(req);

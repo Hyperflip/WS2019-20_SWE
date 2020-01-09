@@ -125,7 +125,6 @@ public class UrlFactory {
         if(url.length() == 1) {
             return UrlType.MAIN_PAGE;
         }
-
         if(!url.contains("?") && !url.contains("#")) {
             return UrlType.ONLY_PATH;
         }
